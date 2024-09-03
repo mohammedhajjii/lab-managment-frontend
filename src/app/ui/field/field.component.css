@@ -1,0 +1,20 @@
+.field-container{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 40px;
+  padding: 20px;
+}
+
+
+.field-container .field-name{
+  font-weight: bold;
+  font-size: 20px;
+  width: 250px;
+}
+
+
+.field-container .field-value{
+  flex: auto;
+  font-size: 20px;
+}

@@ -1,0 +1,16 @@
+<div class="form-toggle">
+  <span class="toggle-label">{{toggleLabel}}</span>
+  <mat-slide-toggle
+    [formControl]="control"
+    [labelPosition]="toggleLabelPosition"
+    [color]="toggleColor">
+  </mat-slide-toggle>
+  @if(tooltipContent){
+    <mat-icon
+      [matTooltip]="tooltipContent"
+      [matTooltipPosition]="tooltipPosition"
+      (click)="tooltipToggle()">
+      info_outline
+    </mat-icon>
+  }
+</div>

@@ -1,0 +1,15 @@
+
+<div class="fragment-container">
+  <div class="fragment-container-title">Jump to</div>
+  <mat-nav-list>
+    @for(fragment of fragments; track fragment){
+      <mat-list-item
+        [routerLink]="['.']"
+        routerLinkActive="test"
+        [routerLinkActiveOptions]="{exact: true}"
+        [fragment]="fragment.id">
+        {{fragment.label}}
+      </mat-list-item>
+    }
+  </mat-nav-list>
+</div>

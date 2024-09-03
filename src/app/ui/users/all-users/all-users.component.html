@@ -1,0 +1,163 @@
+<div class="app-container">
+
+  <mat-card>
+    <mat-card-content>
+
+      <div class="top-card-content">
+        <div class="filter-container">
+          @if ((kind === Profile.PHD_STUDENT ||
+            kind === Profile.GUEST) && isAdmin){
+            <mat-form-field>
+              <mat-label>Filtered by professor</mat-label>
+              <mat-select
+                [formControl]="filteredByProf">
+                <mat-option value="*">All</mat-option>
+                @for (professor of professors; track professor){
+                  <mat-option
+                    [value]="PropertyMappers.userValueMapper(professor)">
+                    {{PropertyMappers.userLabelMapper(professor)}}
+                  </mat-option>
+                }
+                <mat-option value="none">Unsupervised</mat-option>
+              </mat-select>
+              <mat-icon
+                color="primary"
+                matSuffix>
+                filter_alt
+              </mat-icon>
+            </mat-form-field>
+          }
+          <mat-form-field>
+            <mat-label>search</mat-label>
+            <input
+              matInput
+              placeholder="Search by keywork"
+              [formControl]="keyword">
+            <mat-icon
+              matSuffix
+              color="primary">
+              search
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="buttons-container">
+          <button
+            mat-button
+            color="primary"
+            (click)="openAddUserDialog()">
+            <mat-icon>add</mat-icon>
+            Create
+          </button>
+          <button
+            mat-button
+            (click)="refresh()"
+            color="primary">
+            <mat-icon>
+              refresh
+            </mat-icon>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content>
+      <table mat-table
+             [dataSource]="dataSource"
+             matSort="matSort">
+
+        <ng-container matColumnDef="Username">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Username
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let user">
+            {{user.username}}
+            <span
+              [matBadge]="user.enabled ? '&check;' : '&#8505;'"
+              [matBadgeColor]="user.enabled ? 'accent': 'warn'"
+              matBadgeSize="small">
+          </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Email
+          </th>
+          <td mat-cell *matCellDef="let user"> {{user.email}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Firstname">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Firstname
+          </th>
+          <td mat-cell *matCellDef="let user"> {{user.firstName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Lastname">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            LastName
+          </th>
+          <td mat-cell *matCellDef="let user"> {{user.lastName}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Department">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>
+            Department
+          </th>
+          <td mat-cell *matCellDef="let user"> {{user.attributes.department}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Edit">
+          <th mat-header-cell *matHeaderCellDef>
+            Edit
+          </th>
+          <td mat-cell *matCellDef="let user">
+            <button
+              mat-icon-button
+              [routerLink]="[user.id]"
+              color="accent">
+              <mat-icon>
+                launch
+              </mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Delete">
+          <th mat-header-cell *matHeaderCellDef>
+            Delete
+          </th>
+          <td mat-cell *matCellDef="let user">
+            <button
+              mat-icon-button
+              (click)="deleteUser(user.id, user.username)"
+              color="warn">
+              <mat-icon>
+                delete_outline
+              </mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+        aria-label="Select page of users">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+

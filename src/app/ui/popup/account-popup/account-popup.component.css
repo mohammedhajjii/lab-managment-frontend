@@ -1,0 +1,36 @@
+.popup-contents{
+  display: grid;
+  place-items: center;
+  background-color: #ffffff;
+  border-radius: 7%;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  padding: 16px;
+  z-index: 1000;
+}
+
+.popup-item{
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: auto;
+  margin: 5px;
+  padding: 5px;
+}
+
+.popup-item .user-email,
+.popup-item .greeting-value {
+  font-size: 22px;
+}
+
+.popup-item .account-label-circle {
+  display: grid;
+  place-items: center;
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background-color: #7F56D9;
+  color: #ffffff;
+  font-size: 50px;
+}
+
+

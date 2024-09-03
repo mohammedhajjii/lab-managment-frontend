@@ -1,0 +1,6 @@
+.dialog-content{
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  margin: 10px;
+}

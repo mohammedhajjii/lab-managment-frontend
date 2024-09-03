@@ -1,0 +1,21 @@
+<div class="snack-bar">
+
+  <mat-icon
+    class="snackbar-icon"
+    [color]="data.success ? 'accent': 'warn'">
+     {{data.success ? 'check_circle' : 'cancel' }}
+  </mat-icon>
+
+
+  <span
+    [class]="data.success ? 'snackbar-message success': 'snackbar-message failure'">
+    {{data.operation}} {{data.success ? 'successfully': 'failed'}}
+  </span>
+
+  <mat-icon
+    class="snackbar-close-icon"
+    (click)="hideNotification()">
+    close
+  </mat-icon>
+
+</div>

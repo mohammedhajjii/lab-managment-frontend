@@ -1,0 +1,248 @@
+@use "@angular/material" as mat;
+
+@include mat.core();
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+// defining colors variants:
+$app-azure-color: (
+  50: #edf2f8,
+  100: #e2eafc,
+  200: #d7e3fc,
+  300: #ccdbfd,
+  400: #c1d3fe,
+  500: #b6ccfe,
+  600: #abc4fe,
+  700: #abc4ff,
+  800: #abc7ff,
+  900: #abc9ff,
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+$app-blue-plus-palette: (
+  50: #F2F4FE,
+  100: #E7EBFD,
+  200: #CCD5FC,
+  300: #ACBCFA,
+  400: #859FF8,
+  500: #0D67F6,
+  600: #0C62EB,
+  700: #0B58D2,
+  800: #0A4CB6,
+  900: #083E94,
+  1000: #062C69,
+
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+$app-violet-color: (
+  50: #E2DDF5,
+  100: #D6CDF1,
+  200: #C9BEED,
+  300: #BDAEE9,
+  400: #7F56D9,
+  500: #7750CB,
+  600: #6F4BBD,
+  700: #5B3E9C,
+  800: #47307A,
+  900: #3D2968,
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+$app-green-color: (
+  50: #D8ECDF,
+  100: #C7E4D1,
+  200: #B4DCC3,
+  300: #A2D4B5,
+  400: #17B26A,
+  500: #15A663,
+  600: #149B5C,
+  700: #11804C,
+  800: #0D643C,
+  900: #0B5533,
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+
+//defining palettes:
+$app-azure-palette: mat.define-palette($app-azure-color, 600);
+$app-blue-palette: mat.define-palette(mat.$blue-palette, 800);
+$app-violet-palette: mat.define-palette($app-violet-color);
+$app-green-palette: mat.define-palette($app-green-color);
+
+
+$app-primary-theme: mat.define-light-theme((
+  color : (
+    theme-type: light,
+    primary: $app-azure-palette,
+    accent: $app-blue-palette,
+  ),
+  density: (
+    scale: -3
+  )
+));
+
+
+
+
+
+
+$app-second-theme: mat.define-light-theme((
+  color: (
+    theme-type: light,
+    primary: mat.define-palette($app-blue-plus-palette, 600),
+    accent: mat.define-palette($app-violet-palette, 400)
+  )
+));
+
+@include  mat.button-theme($app-second-theme);
+@include mat.stepper-theme($app-second-theme);
+
+
+
+
+$app-third-theme: mat.define-light-theme((
+color: (
+  theme-type: light,
+  primary: mat.define-palette($app-blue-plus-palette, 600),
+  accent: mat.define-palette($app-green-palette, 600)
+)
+));
+
+@include  mat.icon-theme($app-third-theme);
+@include mat.form-field-theme($app-third-theme);
+@include mat.badge-theme($app-third-theme);
+
+
+$app-blue-white-colors: (
+  50: #FBFCFF,
+  100: #F7FAFF,
+  200: #EEF4FE,
+  300: #E6EFFE,
+  400: #DDE9FD,
+  500: #D3E3FD,
+  600: #BDCBE2,
+  700: #A3B0C4,
+  800: #8590A0,
+  900: #5E6671,
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+$app-blue-star-color: (
+  50: #F3F6FE,
+  100: #E6ECFD,
+  200: #CAD7FB,
+  300: #A9BFF8,
+  400: #80A5F6,
+  500: #4285F4,
+  600: #3B77DA,
+  700: #3367BD,
+  800: #2A549A,
+  900: #1E3B6D,
+  contrast : (
+    50: #000,
+    100: #000,
+    200: #000,
+    300: #000,
+    400: #fff,
+    500: #fff,
+    600: #fff,
+    700: #fff,
+    800: #fff,
+    900: #fff,
+  )
+);
+
+$app-fourth-theme: mat.define-light-theme((
+  color: (
+    theme-type: light,
+    primary: mat.define-palette($app-blue-white-colors, 500),
+    accent: mat.define-palette($app-blue-star-color, 500)
+  )
+));
+
+@include mat.toolbar-theme($app-fourth-theme);
+@include  mat.icon-button-theme($app-fourth-theme);
+@include mat.tabs-theme($app-fourth-theme);
+@include mat.progress-spinner-theme($app-fourth-theme);
+@include mat.slide-toggle-theme($app-fourth-theme);
+
+/* -------------------------------------------------------------------------------- */
+
+.spacer{
+  flex: auto;
+}
+
+.app-icon{
+  color: mat.get-color-from-palette(mat.$blue-palette, 700);
+}
+
+
+
+.mat-mdc-dialog-container {
+  --mat-dialog-actions-alignment: end;
+  --mdc-dialog-container-shape: 20px;
+}
+
+
+
+
+.mdc-button {
+  border-radius: 40px !important;
+  height: 40px !important;
+}
+
+
+

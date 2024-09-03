@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>update {{field.label}}</h2>
+<mat-dialog-content>
+
+  <div class="mat-dialog-content">
+    @if (field.type === 'input'){
+      <app-form-input
+        [control]="control"
+        [inputLabel]="field.label"
+        [inputType]="field.inputType"
+        [placeholderText]="field.placeholderText"
+        [errorsHandler]="field.errors"
+        [width]="field.controlWidth">
+      </app-form-input>
+    }
+
+    @if (field.type === 'select'){
+      <app-form-select
+        [control]="control"
+        [selectLabel]="field.label"
+        [errorsHandler]="field.errors"
+        [dataSource]="field.datasource"
+        [valueMapper]="field.valueMapper"
+        [labelMapper]="field.labelMapper">
+      </app-form-select>
+    }
+  </div>
+
+
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button
+    mat-button
+    [mat-dialog-close]="origin"
+    color="primary">
+    cancel
+  </button>
+  <button
+    mat-button
+    [mat-dialog-close]="control.value"
+    [disabled]="control.invalid"
+    cdkFocusInitial
+    color="primary">
+    save
+  </button>
+</mat-dialog-actions>

@@ -1,0 +1,80 @@
+<mat-toolbar color="primary">
+  <button
+    mat-icon-button
+    color="accent"
+    (click)="sidenav.toggle()">
+      <mat-icon >menu</mat-icon>
+  </button>
+  <span class="app-icon">Lab-management</span>
+  <span class="spacer"></span>
+  <button
+    mat-icon-button
+    cdkOverlayOrigin
+    #accountPopupTrigger="cdkOverlayOrigin"
+    (click)="toggleAccountPopup()"
+    color="accent"
+    >
+    <mat-icon>person</mat-icon>
+  </button>
+</mat-toolbar>
+<mat-sidenav-container>
+  <mat-sidenav  mode="side" #sidenav>
+    <mat-nav-list>
+
+      @for (item of navigationItems; track item){
+        <app-nav-item
+          [navItemDetails]="item">
+        </app-nav-item>
+      }
+
+      <mat-list-item
+        *only="['ADMIN', 'PROFESSOR']">
+        <mat-icon
+          matListItemIcon>
+          dvr
+        </mat-icon>
+        Equipments
+      </mat-list-item>
+
+      <mat-list-item
+        *only="['ADMIN', 'PROFESSOR']">
+        <mat-icon
+          matListItemIcon>
+          people
+        </mat-icon>
+        Products
+      </mat-list-item>
+
+      <mat-list-item
+        *only="['ADMIN', 'PROFESSOR', 'PHD_STUDENT']">
+        <mat-icon
+          matListItemIcon>
+          create
+        </mat-icon>
+        Reservations
+      </mat-list-item>
+
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    @if (displayLoadingIndicator){
+      <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+    }
+    <div class="main-container">
+      <router-outlet></router-outlet>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayMinWidth]="'20%'"
+  [cdkConnectedOverlayOrigin]="accountPopupTrigger"
+  [cdkConnectedOverlayOpen]="displayAccountPopup"
+  (overlayOutsideClick)="hideAccountPopup()"
+>
+  <app-account-popup
+    (closeTrigger)="hideAccountPopup()">
+  </app-account-popup>
+</ng-template>

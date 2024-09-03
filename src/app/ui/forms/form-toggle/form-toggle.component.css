@@ -1,0 +1,38 @@
+:host {
+
+  .form-toggle{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .toggle-label{
+    font-weight: bold;
+  }
+
+  ::ng-deep .mdc-switch{
+    width: 60px !important;
+    /*margin-top: 10px !important;*/
+  }
+
+  ::ng-deep .mdc-switch__track {
+    width: 60px !important;
+    height: 30px !important;
+    border-radius: 20px !important;
+  }
+
+  ::ng-deep .mdc-switch__handle {
+    width: 30px !important;
+    height: 25px !important;
+    border-radius: 20px !important;
+  }
+
+  ::ng-deep .mdc-switch__handle-track {
+    width: 28px !important;
+  }
+
+  ::ng-deep .mdc-label{
+    margin-right: 40px !important;
+  }
+}
+

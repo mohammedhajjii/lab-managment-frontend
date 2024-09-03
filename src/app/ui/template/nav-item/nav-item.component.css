@@ -1,0 +1,8 @@
+.active-list-item{
+  background-color: #D3E3FD;
+}
+
+.active-list-item .item-title{
+  color: #2A549A !important;
+  font-weight: bold !important;
+}

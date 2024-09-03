@@ -1,0 +1,33 @@
+
+.snack-bar{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 16px;
+}
+
+.snackbar-message {
+  flex-grow: 1;
+  font-size: 16px;
+  font-weight: bold;
+
+}
+
+.snackbar-icon{
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.snackbar-close-icon{
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.success{
+  color: #17B26A;
+}
+
+.failure{
+  color: #E7464B
+}

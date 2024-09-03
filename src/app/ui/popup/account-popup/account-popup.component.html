@@ -1,0 +1,42 @@
+<div class="popup-contents">
+  <div class="popup-item">
+    <span class="user-email">{{email}}</span>
+  </div>
+  <div class="popup-item">
+    <div
+      matBadge="&check;"
+      matBadgeColor="accent"
+      matBadgePosition="below after"
+      matBadgeSize="small"
+      class="account-label-circle">
+      <span class="account-label">
+        {{label}}
+      </span>
+    </div>
+  </div>
+  <div class="popup-item">
+    <span class="greeting-value">
+      Hi, {{firstname}}
+    </span>
+  </div>
+  <div class="popup-item">
+    <button
+      mat-stroked-button
+      [routerLink]="['/profile', id]"
+      (click)="raiseCloseEvent()"
+      color="primary">
+      See profile details
+    </button>
+  </div>
+  <div class="popup-item">
+    <button
+      mat-stroked-button
+      (click)="signOut()"
+      color="primary">
+      <mat-icon>
+        logout
+      </mat-icon>
+      logout
+    </button>
+  </div>
+</div>

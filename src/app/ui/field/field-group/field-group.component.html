@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{groupName}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    @for (field of fieldSet.fields; track field){
+      <app-field
+        (touched)="fieldIsTouched()"
+        [field]="field">
+      </app-field>
+      @if(!$last){
+        <mat-divider></mat-divider>
+      }
+    }
+  </mat-card-content>
+</mat-card>

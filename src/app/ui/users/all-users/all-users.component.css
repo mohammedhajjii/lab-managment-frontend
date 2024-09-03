@@ -1,0 +1,26 @@
+
+
+.app-container{
+  display: grid;
+  row-gap: 20px;
+}
+
+.top-card-content{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.buttons-container{
+  display: flex;
+  align-items: center;
+  gap: 20px
+}
+
+.filter-container{
+  display: flex;
+  align-items: center;
+  height: 80px;
+  gap: 20px
+}

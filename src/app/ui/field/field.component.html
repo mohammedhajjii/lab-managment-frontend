@@ -1,0 +1,14 @@
+
+<div class="field-container">
+  <span class="field-name">{{field.label}}</span>
+  <span class="field-value">{{field.value}}</span>
+  @if(!field.readOnly){
+    <button
+      mat-icon-button
+      (click)="openFieldDialog(field)"
+      color="accent">
+      <mat-icon>edit</mat-icon>
+    </button>
+  }
+
+</div>

@@ -1,0 +1,16 @@
+<mat-list-item
+  *only="navItemDetails.onlyFor"
+  [routerLink]="navItemDetails.forRoute"
+  [queryParams]="navItemDetails.qParams"
+  routerLinkActive="active-list-item"
+  [routerLinkActiveOptions]="{exact: true}">
+  <mat-icon
+    matListItemIcon>
+    {{navItemDetails.itemIcon}}
+  </mat-icon>
+  <span
+    matLine
+    class="item-title">
+    {{navItemDetails.itemLabel}}
+  </span>
+</mat-list-item>

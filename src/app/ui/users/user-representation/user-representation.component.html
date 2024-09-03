@@ -1,0 +1,221 @@
+<div class="app-container">
+
+  <app-field-group
+    [groupName]="'Profile Overview'"
+    [fieldSet]="profileOverviewFieldSet">
+  </app-field-group>
+
+  <mat-card>
+    <mat-card-content>
+      <mat-tab-group color="accent">
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">account_circle</mat-icon>
+            General details
+          </ng-template>
+          <div class="tab-content">
+
+            <app-form-input
+              [control]="getControl(generalFormGroup, 'email')"
+              [inputLabel]="'Email'"
+              [inputType]="'email'"
+              [placeholderText]="'Ex: mail@gmail.com'"
+              [errorsHandler]="{
+              required: 'email field cannot be empty!',
+              email: 'invalid email format',
+              emailInUse: 'email is already used by another user'
+          }"
+              [width]="'60%'">
+            </app-form-input>
+
+            <app-form-input
+              [control]="getControl(generalFormGroup, 'firstName')"
+              [inputLabel]="'First name'"
+              [placeholderText]="'user first name'"
+              [errorsHandler]="{
+            required: 'first name field cannot be empty!'
+          }"
+              [width]="'60%'">
+            </app-form-input>
+
+            <app-form-input
+              [control]="getControl(generalFormGroup, 'lastName')"
+              [inputLabel]="'Last name'"
+              [placeholderText]="'user last name'"
+              [errorsHandler]="{
+            required: 'last name field cannot be empty!'
+          }"
+              [width]="'60%'">
+            </app-form-input>
+          </div>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">business</mat-icon>
+            Department details
+          </ng-template>
+          <div class="tab-content">
+
+            <app-form-select
+              [control]="getControl(departmentFormGroup, 'department')"
+              [selectLabel]="'Department'"
+              [errorsHandler]="{required: 'department field is required!'}"
+              [width]="'60%'"
+              [dataSource]="departments"
+              [valueMapper]="PropertyMappers.departmentValueMapper"
+              [labelMapper]="PropertyMappers.departmentLabelMapper">
+            </app-form-select>
+
+
+            @if (managedUser.attributes.profile === Profile.PHD_STUDENT
+            || managedUser.attributes.profile === Profile.GUEST){
+
+              <app-form-input
+                [control]="getControl(departmentFormGroup, 'studentCode')"
+                [inputLabel]="'Student code'"
+                [errorsHandler]="{
+              required: 'student code is required',
+              pattern: 'the correct student code format: E100200300',
+              studentCode: 'code is already used by another student'
+            }"
+                [width]="'60%'">
+              </app-form-input>
+
+              <app-form-input
+                [control]="getControl(departmentFormGroup, 'subject')"
+                [inputLabel]="'Subject'"
+                [errorsHandler]="{
+              required: 'subject is required',
+            }"
+                [width]="'60%'">
+              </app-form-input>
+
+              <app-form-select
+                *only="['ADMIN']"
+                [control]="getControl(departmentFormGroup, 'supervisor')"
+                [selectLabel]="'Supervisor'"
+                [errorsHandler]="{required: 'Supervisor field is required'}"
+                [width]="'60%'"
+                [dataSource]="professors"
+                [labelMapper]="PropertyMappers.userLabelMapper"
+                [valueMapper]="PropertyMappers.userValueMapper">
+
+              </app-form-select>
+            }
+
+
+            @if (managedUser.attributes.profile === Profile.GUEST){
+
+              <app-form-select
+                [control]="getControl(departmentFormGroup, 'secondSupervisor')"
+                [selectLabel]="'Second supervisor'"
+                [errorsHandler]="{required: 'second supervisor is required'}"
+                [dataSource]="phdStudents"
+                [valueMapper]="PropertyMappers.userValueMapper"
+                [labelMapper]="PropertyMappers.userLabelMapper"
+                [width]="'60%'">
+
+              </app-form-select>
+            }
+
+          </div>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">how_to_reg</mat-icon>
+            User status
+          </ng-template>
+          <div class="tab-content">
+            <div class="control-with-tips">
+              <app-tips
+                [tips]="enableTips">
+              </app-tips>
+              <app-form-toggle
+                [control]="getControl(generalFormGroup, 'enabled')"
+                [toggleColor]="'accent'"
+                [toggleLabel]="'Enable user'">
+              </app-form-toggle>
+            </div>
+          </div>
+        </mat-tab>
+        <mat-tab>
+          <ng-template mat-tab-label>
+            <mat-icon class="tab-icon">key</mat-icon>
+            Reset password
+          </ng-template>
+          <div class="tab-content">
+            <div class="control-with-tips">
+              <app-tips
+                [tips]="resetTips">
+              </app-tips>
+              <div>
+                <button
+                  mat-raised-button
+                  (click)="resetUSerPassword(managedUser.id)"
+                  color="primary" aria-label="test">
+                  <mat-icon>reset</mat-icon>
+                  send reset password email
+                </button>
+              </div>
+              @if(displayRestPasswordProcessSpinner){
+                <div class="spinner-container">
+                  <mat-spinner></mat-spinner>
+                </div>
+              }
+            </div>
+          </div>
+        </mat-tab>
+        @if(managedUser.attributes.profile === Profile.PHD_STUDENT){
+          <mat-tab>
+            <ng-template mat-tab-label>
+              <mat-icon class="tab-icon">tune</mat-icon>
+              Advanced
+            </ng-template>
+            <div class="tab-content">
+              <div class="control-with-tips">
+                <app-tips
+                  [tips]="delegateTips">
+                </app-tips>
+                <app-form-toggle
+                  [control]="delegatePredicate"
+                  [toggleLabel]="'Delegate mode'"
+                  [toggleColor]="'accent'">
+                </app-form-toggle>
+              </div>
+            </div>
+            <div class="tab-actions">
+              <button
+                mat-raised-button
+                (click)="delegateToggle(managedUser.id)"
+                color="primary">
+                save student role
+              </button>
+            </div>
+          </mat-tab>
+        }
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content>
+      <div class="tab-actions">
+        <button
+          mat-button
+          [disabled]="!enableResetOption()"
+          (click)="reset()"
+          color="primary">
+          revert
+        </button>
+        <button
+          mat-raised-button
+          [disabled]="!userDetailsHasBeenAltered()"
+          (click)="saveUserDetails()"
+          color="primary">
+          apply changes
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</div>

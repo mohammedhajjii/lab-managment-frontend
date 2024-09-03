@@ -1,0 +1,64 @@
+<div class="container">
+
+
+  <mat-card>
+    <mat-card-content>
+      <div class="preview-container">
+        <div class="profile-label">
+          {{label}}
+        </div>
+        <div class="name-email-profile">
+          <span class="name-element">{{authenticatedUserDetails.firstName}} {{authenticatedUserDetails.lastName}}</span>
+          <span class="email-element">{{authenticatedUserDetails.email}}</span>
+          <span class="profile-element">{{authenticatedUserDetails.attributes.profile}}</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <app-field-group
+    [groupName]="'System'"
+    [fieldSet]="creationFieldSetTemplate">
+  </app-field-group>
+
+
+  <app-field-group
+    [groupName]="'General'"
+    [fieldSet]="basicFieldSetTemplate">
+  </app-field-group>
+
+  <app-field-group
+    id="fr-4"
+    *only="['PROFESSOR', 'DELEGATE', 'PHD_STUDENT', 'GUEST']"
+    [groupName]="'Academic'"
+    [fieldSet]="academicFieldSetTemplate">
+  </app-field-group>
+
+  @if(displayProfileActions()){
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>actions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div
+          class="buttons-container">
+          <button
+            mat-button
+            (click)="resetBasicFieldSetTemplate()"
+            color="primary">
+            Reset
+          </button>
+          <button
+            mat-raised-button
+            cdkFocusInitial
+            [disabled]="!basicFieldSetTemplate.touched"
+            (click)="saveAuthenticatedUserProfile()"
+            color="primary">
+            Save
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+</div>

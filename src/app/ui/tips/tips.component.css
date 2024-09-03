@@ -1,0 +1,22 @@
+.tips-container{
+  min-height: 60px;
+  background-color: #D3E3FD;
+  border-radius: 20px;
+  display: grid;
+  grid-template-columns: 4% auto;
+  color: #2A549A;
+  font-weight: bold;
+}
+
+.tips-icon{
+  display: grid;
+  place-items: self-start;
+  margin: 25px
+}
+
+.tips-message{
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding: 20px
+}

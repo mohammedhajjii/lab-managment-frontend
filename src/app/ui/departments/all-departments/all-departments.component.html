@@ -1,0 +1,159 @@
+<div class="app-container">
+
+  <mat-card>
+    <mat-card-content>
+      <div class="top">
+        <div class="filter-container">
+          <mat-form-field>
+            <mat-label>search by keyword</mat-label>
+            <input
+              matInput
+              [formControl]="filterField"
+              placeholder="keyword">
+            <mat-icon matSuffix>
+              search
+            </mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="buttons-container">
+          <button
+            mat-button
+            (click)="openDepartmentDialogPopup('create')"
+            color="primary">
+            <mat-icon>add</mat-icon>
+            create
+          </button>
+          <button
+            mat-button
+            (click)="refresh()"
+            color="primary">
+            <mat-icon>refresh</mat-icon>
+            refresh
+          </button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content>
+      <table
+        mat-table
+        [dataSource]="datasource"
+        matSort="matSort">
+
+        <ng-container matColumnDef="ID">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            ID
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            {{dept.id}}
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="Department name">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Department name
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            {{dept.name}}
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="Department code">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Department code
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            {{dept.code}}
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="Creation date">
+          <th
+            mat-header-cell
+            *matHeaderCellDef
+            mat-sort-header>
+            Created at
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            {{dept.creationTimestamp | date: 'medium'}}
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="Edit">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>
+            Edit
+          </th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            <button
+              mat-icon-button
+              (click)="openDepartmentDialogPopup('update', dept.id, dept.name)"
+              color="accent">
+              <mat-icon>edit</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container
+          matColumnDef="Delete">
+          <th
+            mat-header-cell
+            *matHeaderCellDef>Delete</th>
+          <td
+            mat-cell
+            *matCellDef="let dept">
+            <button
+              mat-icon-button
+              (click)="deleteDepartment(dept.id)"
+              color="warn">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr
+          mat-header-row
+          *matHeaderRowDef="displayedColumns">
+        </tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+      </table>
+
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 25, 50, 100]"
+        aria-label="Select page of users">
+      </mat-paginator>
+
+    </mat-card-content>
+  </mat-card>
+
+
+</div>

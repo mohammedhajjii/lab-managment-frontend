@@ -1,5 +1,24 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      Home page
+    </mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="container">
+      <h1 *only="['PROFESSOR']">
+        this Home for Professors members only
+      </h1>
+      <h1 *only="['ADMIN']">
+        this Home for administrators members only
+      </h1>
+      <h1 *only="['PHD_STUDENT']">
+        this Home for phd students  members only
+      </h1>
+      <h1 *only="['GUEST']">
+        this Home for guests members only
+      </h1>
 
-
-<h2>
-  Hello
-</h2>
+    </div>
+  </mat-card-content>
+</mat-card>
