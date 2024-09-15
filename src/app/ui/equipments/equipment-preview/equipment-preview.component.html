@@ -1,0 +1,40 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      {{equipment.name}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{equipment.category.name}}
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="equipment-img-container">
+      <img
+        mat-card-image
+        [src]="equipment.image"
+        alt="equipment image"
+        class="equipment-img"
+      >
+    </div>
+  </mat-card-content>
+  <mat-card-actions>
+    <button
+      mat-button
+      color="primary">
+      RESERVE
+    </button>
+    <button
+      mat-button
+      [routerLink]="['.', equipment.id]"
+      color="primary">
+      SEE
+    </button>
+    <button
+      mat-button
+      (click)="deleteEquipment()"
+      color="warn">
+      DELETE
+    </button>
+
+  </mat-card-actions>
+</mat-card>

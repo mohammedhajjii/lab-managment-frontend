@@ -1,4 +1,4 @@
-import {APP_INITIALIZER, NgModule, NO_ERRORS_SCHEMA} from '@angular/core';
+import {APP_INITIALIZER, NgModule} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -45,12 +45,12 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
 import {MatDividerModule} from "@angular/material/divider";
 import { SnackBarComponent } from './ui/popup/snack-bar/snack-bar.component';
 import { AccountPopupComponent } from './ui/popup/account-popup/account-popup.component';
-import {CdkConnectedOverlay, OverlayModule} from "@angular/cdk/overlay";
+import {OverlayModule} from "@angular/cdk/overlay";
 import { NavItemComponent } from './ui/template/nav-item/nav-item.component';
 import { EditFieldDialogComponent } from './ui/popup/edit-field-dialog/edit-field-dialog.component';
 import { FieldComponent } from './ui/field/field.component';
 import { FieldGroupComponent } from './ui/field/field-group/field-group.component';
-import {DatePipe} from "@angular/common";
+import {DatePipe, NgOptimizedImage} from "@angular/common";
 import { ConfirmComponent } from './ui/popup/confirm/confirm.component';
 import {MatBadgeModule} from "@angular/material/badge";
 import { FragmentComponent } from './ui/fragment/fragment.component';
@@ -59,8 +59,19 @@ import { TipsComponent } from './ui/tips/tips.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {CdkTrapFocus} from "@angular/cdk/a11y";
 import { AllDepartmentsComponent } from './ui/departments/all-departments/all-departments.component';
-import { CreateComponent } from './ui/department/create/create.component';
 import { CreateDepartmentComponent } from './ui/departments/create-department/create-department.component';
+import { FilterControlComponent } from './ui/filters/filter-control/filter-control.component';
+import { FilterGroupComponent } from './ui/filters/filter-group/filter-group.component';
+import { EquipmentsComponent } from './ui/equipments/equipments/equipments.component';
+import { EquipmentDetailsComponent } from './ui/equipments/equipment-details/equipment-details.component';
+import { NewEquipmentComponent } from './ui/equipments/new-equipment/new-equipment.component';
+import { FormFileComponent } from './ui/forms/form-file/form-file.component';
+import { SearchComponent } from './ui/forms/search/search.component';
+import { CategoriesComponent } from './ui/equipments/categories/categories/categories.component';
+import { CategoryComponent } from './ui/equipments/categories/category/category.component';
+import { EquipmentPreviewComponent } from './ui/equipments/equipment-preview/equipment-preview.component';
+import { EquipmentQrcodeComponent } from './ui/equipments/equipment-qrcode/equipment-qrcode.component';
+import { EquipmentStatusComponent } from './ui/equipments/equipment-status/equipment-status.component';
 
 @NgModule({
   declarations: [
@@ -88,8 +99,19 @@ import { CreateDepartmentComponent } from './ui/departments/create-department/cr
     FragmentComponent,
     TipsComponent,
     AllDepartmentsComponent,
-    CreateComponent,
     CreateDepartmentComponent,
+    FilterControlComponent,
+    FilterGroupComponent,
+    EquipmentsComponent,
+    EquipmentDetailsComponent,
+    NewEquipmentComponent,
+    FormFileComponent,
+    SearchComponent,
+    CategoriesComponent,
+    CategoryComponent,
+    EquipmentPreviewComponent,
+    EquipmentQrcodeComponent,
+    EquipmentStatusComponent,
   ],
     imports: [
         BrowserModule,
@@ -126,7 +148,7 @@ import { CreateDepartmentComponent } from './ui/departments/create-department/cr
         MatBadgeModule,
         MatTabsModule,
         MatProgressSpinnerModule,
-        CdkTrapFocus
+        NgOptimizedImage,
     ],
   providers: [
     {

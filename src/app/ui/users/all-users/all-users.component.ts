@@ -21,11 +21,17 @@ import {userSortingDataAccessor} from "../../../utils/transformers.utils";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackBarComponent} from "../../popup/snack-bar/snack-bar.component";
 import {ConfirmComponent} from "../../popup/confirm/confirm.component";
-import {KeycloakProfile} from "keycloak-js";
-import {from, iif, mergeWith, Observable, of, switchMap, take, tap} from "rxjs";
+import {Observable, switchMap} from "rxjs";
 import {Department} from "../../../models/department.model";
-import {PropertyMappers} from "../../../utils/controls.template";
-import {merge} from "rxjs/internal/operators/merge";
+import {Mappers} from "../../../utils/controls.template";
+import {
+  FilterControl,
+  FilterGroup,
+  FilterGroupData,
+  SubscriberMap,
+  UserFilter,
+  usersFilterSubscribersMap
+} from "../../../utils/filters.utils";
 
 @Component({
   selector: 'app-all-users',
@@ -34,12 +40,17 @@ import {merge} from "rxjs/internal/operators/merge";
 })
 export class AllUsersComponent implements OnInit, AfterViewInit{
 
+  protected readonly Profile = Profile;
+
+  dataSource: MatTableDataSource<UserDetails>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) matSort: MatSort;
 
   readonly keyword: FormControl = new FormControl<string>(null);
-  readonly filteredByProf: FormControl = new FormControl<string>(null);
 
+
+  userFilterGroup!: FilterGroup<UserFilter>;
+  userFilterSubscriberMap: SubscriberMap<UserFilter>;
 
   readonly displayedColumns: string[] = [
     'Username',
@@ -52,12 +63,12 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
   ];
 
 
-  dataSource: MatTableDataSource<UserDetails>;
   kind: Profile;
   isAdmin!: boolean;
-  managerProfile!: KeycloakProfile;
-  professors!: UserDetails[];
+  managerProfile!: UserDetails;
   departments!: Department[];
+  professors!: UserDetails[];
+  students!: UserDetails[];
 
 
   constructor(private userServices: UserService,
@@ -72,21 +83,23 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
       next: queryParamMap => {
         this.kind = queryParamMap.get('profile') as Profile;
         this.isAdmin = Boolean(queryParamMap.get('isAdmin')) ?? false;
-
-        console.log('is admin => ' + this.isAdmin);
       }
     });
 
     this.activatedRoute.data.subscribe({
       next: data => {
         this.dataSource = new MatTableDataSource(data['users'] as UserDetails[]);
-        this.managerProfile = data['profile'] as KeycloakProfile;
-        this.professors = data['professors'] as UserDetails[];
+        this.managerProfile = data['profile'] as UserDetails;
         this.departments = data['departments'] as Department[];
+        this.professors = data['professors'] as UserDetails[];
+        this.students = data['students'] as UserDetails[];
       }
     });
 
     this.dataSource.sortingDataAccessor = userSortingDataAccessor;
+
+
+   this.setUserFilterGroup();
 
   }
 
@@ -94,15 +107,17 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
 
   openAddUserDialog() {
 
-    const dialogRef = this.dialogService.open<UserCreationComponent, UserCreationDialogData, DialogClosingState>(
-      UserCreationComponent,
-      userCreationDialogConfig({
-        kind: this.kind,
-        isAdmin: this.isAdmin,
-        userContext: this.managerProfile,
-        professors: this.professors,
-        departments: this.departments
-      })
+    const dialogRef = this.dialogService
+      .open<UserCreationComponent, UserCreationDialogData, DialogClosingState>(
+        UserCreationComponent,
+        userCreationDialogConfig({
+          kind: this.kind,
+          isAdmin: this.isAdmin,
+          userContext: this.managerProfile,
+          professors: this.professors,
+          departments: this.departments,
+          students: this.students
+        })
     );
     dialogRef.afterClosed().subscribe({
       next: state => {
@@ -118,24 +133,11 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
     this.dataSource.sort = this.matSort;
 
     this.keyword.valueChanges.subscribe({
-      next: value => {
-        if (value.trim() !== ''){
-          this.dataSource.filter = value;
-          if (this.dataSource.paginator)
-            this.dataSource.paginator.firstPage();
-        }
+      next: keyword => {
+        this.filterByKeyword(keyword);
       }
     });
 
-    this.filteredByProf.valueChanges
-      .pipe(
-        switchMap(value => this.reloadUserList(value))
-      )
-      .subscribe({
-        next: users => {
-          this.dataSource.data = users;
-        }
-      });
   }
 
 
@@ -154,12 +156,12 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
         if (response){
           this.userServices.safeDelete(id, this.kind)
             .subscribe({
-              error: err => {
+              error: () => {
                 this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
                   SnackBarComponent,
                   notificationConfig({
-                    operation: 'deleting user was ',
-                    success: false
+                    type: 'success',
+                    message: 'delete user failed'
                   })
                 )
               },
@@ -167,8 +169,8 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
                 this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
                   SnackBarComponent,
                   notificationConfig({
-                    operation: 'user deleted ',
-                    success: true
+                    type: 'success',
+                    message: 'user deleted successfully'
                   })
                 );
                 this.refresh();
@@ -180,27 +182,96 @@ export class AllUsersComponent implements OnInit, AfterViewInit{
   }
 
   refresh() {
-    this.reloadUserList(this.filteredByProf.value)
-      .subscribe({
-        next: userDetailsList => {
-          this.dataSource.data = userDetailsList;
-        }
-      })
+    this.filterChanges(this.userFilterGroup.getRawValues());
   }
 
-  reloadUserList(criteria: string | null): Observable<UserDetails[]>{
-
-    switch (criteria){
-      case null:
-      case '*':
-        return this.userServices.getUsersByProfile(this.kind);
-      case 'none':
-        return this.userServices.getUnsupervised(this.kind);
-      default:
-        return this.userServices.getSupervisedBySupervisor(criteria, this.kind);
+  filterByKeyword(keyword: string): void{
+    if(!keyword.trim()){
+      this.dataSource.filter = '';
+    }
+    else {
+      this.dataSource.filter = keyword;
+      if (this.dataSource.paginator)
+        this.dataSource.paginator.firstPage();
     }
   }
 
-  protected readonly Profile = Profile;
-  protected readonly PropertyMappers = PropertyMappers;
+
+  setUserFilterGroup(): void{
+
+    console.log(`managerID: ${this.isAdmin ? undefined: this.managerProfile.id}`)
+
+    this.userFilterGroup = new FilterGroup<UserFilter>({
+      department: new FilterControl<Department, UserDetails, string, UserDetails>({
+        label: 'Filter by department',
+        placeholder: 'department',
+        origin: this.departments,
+        valueMapper: Mappers.departmentValueMapper,
+        labelMapper: Mappers.departmentLabelMapper,
+        all: '*',
+        none: 'none',
+        visible: this.isAdmin,
+        internal: value => user => user.attributes.department === value,
+        external: value => user => user.attributes.department === value,
+      }),
+      professor:  new FilterControl<UserDetails, UserDetails, string>({
+        label: 'Filter by supervisor',
+        placeholder: 'supervisor',
+        origin: this.professors,
+        valueMapper: Mappers.userValueMapper,
+        labelMapper: Mappers.userLabelMapper,
+        all: '*',
+        none: 'none',
+        visible: this.isAdmin && (this.kind === Profile.PHD_STUDENT || this.kind === Profile.GUEST),
+        defaultValue: this.isAdmin ? undefined: this.managerProfile.id,
+        internal: value => user => user.attributes.supervisor === value,
+        external: value => user => user.attributes.supervisor === value,
+      }),
+      student: new FilterControl<UserDetails, UserDetails, string>({
+        label: 'Filter by co-supervisor',
+        placeholder: 'co-supervisor',
+        origin: this.students,
+        valueMapper: Mappers.userValueMapper,
+        labelMapper: Mappers.userLabelMapper,
+        all: '*',
+        none: 'none',
+        visible: this.kind === Profile.GUEST,
+        external: value => user => user.attributes.secondSupervisor === value
+      })
+    });
+    this.userFilterSubscriberMap =  usersFilterSubscribersMap;
+  }
+
+
+  filterChanges(values: FilterGroupData<UserFilter>) {
+    this.userServices.getUsersByProfile(this.kind)
+      .subscribe({
+        next: users => {
+          let filteredData: UserDetails[] = users;
+          if (values.department){
+            filteredData = filteredData
+              .filter(
+                this.userFilterGroup.getFilterControl('department')
+                  .applyExternalPredicateFn(values.department)
+              );
+          }
+          if (values.professor){
+            filteredData = filteredData
+              .filter(
+                this.userFilterGroup.getFilterControl('professor')
+                  .applyExternalPredicateFn(values.professor)
+              );
+          }
+
+          if (values.student){
+            filteredData = filteredData
+              .filter(
+                this.userFilterGroup.getFilterControl('student')
+                  .applyExternalPredicateFn(values.student)
+              );
+          }
+          this.dataSource.data = filteredData;
+        }
+      });
+  }
 }

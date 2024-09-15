@@ -1,0 +1,62 @@
+<div class="form-file-container">
+  <div class="file-uploader-wrapper">
+    <mat-form-field
+      [style.width]="width"
+      appearance="outline">
+      <mat-label>{{label}}</mat-label>
+      <input
+        matInput
+        [formControl]="name"
+        placeholder="choose file"
+        readonly
+      >
+      <button
+        matSuffix
+        mat-icon-button
+        (click)="openFileChooser($event)"
+        [color]="isInvalid() ? 'warn': 'accent'">
+        <mat-icon>upload_file</mat-icon>
+      </button>
+      @if (size()){
+        <mat-hint>{{size()}}</mat-hint>
+      }
+
+      @if (name.hasError('required')){
+        <mat-error>
+          file is required
+        </mat-error>
+      }
+
+      @if (name.hasError('fileFormat')){
+        <mat-error>
+          invalid file format, accepted formats are {{accept}}
+        </mat-error>
+      }
+    </mat-form-field>
+    <button
+      mat-icon-button
+      (click)="toggleImagePreview($event)"
+      [disabled]="!name.valid"
+      color="accent">
+      <mat-icon>{{imagePreviewIconButton()}}</mat-icon>
+    </button>
+  </div>
+
+  @if(displayImagePreview){
+    <div class="image-preview">
+      <img
+        [src]="imagePreview()"
+        [draggable]="false"
+        alt="image preview"
+      >
+    </div>
+  }
+
+  <input
+    type="file"
+    [accept]="accept"
+    (change)="onFileChanges($event.target)"
+    hidden
+    #fileChooser
+  >
+</div>

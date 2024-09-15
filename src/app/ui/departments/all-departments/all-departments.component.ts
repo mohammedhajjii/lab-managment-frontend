@@ -9,7 +9,16 @@ import {FormControl} from "@angular/forms";
 import {DepartmentService} from "../../../services/department.service";
 import {MatDialog} from "@angular/material/dialog";
 import {CreateDepartmentComponent} from "../create-department/create-department.component";
-import {DepartmentCreationStatus, departmentPopupConfig, DepartmentPopupData} from "../../../utils/popup.utils";
+import {
+  confirmDialogConfig,
+  ConfirmDialogData,
+  DepartmentCreationStatus,
+  departmentPopupConfig,
+  DepartmentPopupData, notificationConfig, NotificationData
+} from "../../../utils/popup.utils";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {ConfirmComponent} from "../../popup/confirm/confirm.component";
+import {SnackBarComponent} from "../../popup/snack-bar/snack-bar.component";
 
 @Component({
   selector: 'app-all-departments',
@@ -36,7 +45,8 @@ export class AllDepartmentsComponent implements OnInit, AfterViewInit{
 
   constructor(private activatedRoute: ActivatedRoute,
               private departmentService: DepartmentService,
-              private dialogService: MatDialog) {}
+              private dialogService: MatDialog,
+              private snackBarService: MatSnackBar) {}
 
 
   ngOnInit(): void {
@@ -58,19 +68,58 @@ export class AllDepartmentsComponent implements OnInit, AfterViewInit{
       next: keyword => {
         this.filterByKeyword(keyword);
       }
-    })
+    });
   }
 
-  updateDepartment(id: string) {
-    console.log('rceived id: '+ id);
-  }
 
-  deleteDepartment(id: string) {
-    console.log('rceived id: '+ id);
+  deleteDepartment(id: string, name: string) {
+    const confirmDialogRef = this.dialogService
+      .open<ConfirmComponent, ConfirmDialogData, boolean>(
+        ConfirmComponent,
+        confirmDialogConfig({
+          title: 'delete department?',
+          message: `do you want to delete ${name}`
+        })
+      );
+
+    confirmDialogRef.afterClosed()
+      .subscribe({
+        next: response => {
+          if (response){
+            this.departmentService.deleteDepartment(id)
+              .subscribe({
+                error: () => {
+                  this.snackBarService
+                    .openFromComponent<SnackBarComponent, NotificationData>(
+                      SnackBarComponent,
+                      notificationConfig({
+                        type: 'error',
+                        message: 'delete department was failed'
+                      })
+                    );
+                },
+                complete: () => {
+                  this.snackBarService
+                    .openFromComponent<SnackBarComponent, NotificationData>(
+                      SnackBarComponent,
+                      notificationConfig({
+                        type: 'success',
+                        message: 'department was deleted successfully'
+                      })
+                    );
+                  this.refresh();
+                }
+              })
+          }
+        }
+      });
   }
 
   filterByKeyword(keyword: string): void{
-    if (keyword.trim() !== ''){
+    if(!keyword.trim()){
+      this.datasource.filter = '';
+    }
+    else {
       this.datasource.filter = keyword;
       if (this.datasource.paginator)
         this.datasource.paginator.firstPage();

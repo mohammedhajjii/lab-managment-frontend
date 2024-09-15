@@ -3,9 +3,16 @@ import {FormControl, Validators} from "@angular/forms";
 import {departmentNameExistsValidator} from "../../../validators/department.async.validators";
 import {DepartmentService} from "../../../services/department.service";
 import {MAT_DIALOG_DATA} from "@angular/material/dialog";
-import {DepartmentCreationStatus, DepartmentPopupData} from "../../../utils/popup.utils";
+import {
+  DepartmentCreationStatus,
+  DepartmentPopupData,
+  notificationConfig,
+  NotificationData
+} from "../../../utils/popup.utils";
 import {iif} from "rxjs";
-import {departmentResolver} from "../../../resolvers/department.resolver";
+import {departmentsResolver} from "../../../resolvers/departmentsResolver";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackBarComponent} from "../../popup/snack-bar/snack-bar.component";
 
 @Component({
   selector: 'app-create-department',
@@ -18,7 +25,8 @@ export class CreateDepartmentComponent implements OnInit{
   departmentName!: FormControl<string>;
 
   constructor(private departmentService: DepartmentService,
-              @Inject(MAT_DIALOG_DATA) private dialogData: DepartmentPopupData) {
+              private snackBarService: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) public dialogData: DepartmentPopupData) {
   }
 
   ngOnInit(): void {
@@ -29,8 +37,8 @@ export class CreateDepartmentComponent implements OnInit{
     });
   }
 
-  canBeActivated(): boolean {
-    return  this.departmentName.valid && this.departmentName.dirty;
+  invalid(): boolean {
+    return  this.departmentName.invalid;
   }
 
   done(): void{
@@ -40,10 +48,24 @@ export class CreateDepartmentComponent implements OnInit{
       this.departmentService.updateDepartment(this.dialogData.deptId, this.departmentName.value)
     ).subscribe({
       error: err => {
-        console.log('error: ' + err);
+        this.snackBarService
+          .openFromComponent<SnackBarComponent, NotificationData>(
+            SnackBarComponent,
+            notificationConfig({
+              type: 'error',
+              message: `${this.dialogData.mode} department failed`
+            })
+        );
       },
       complete: () => {
-        console.log('success')
+        this.snackBarService
+          .openFromComponent<SnackBarComponent, NotificationData>(
+            SnackBarComponent,
+            notificationConfig({
+              type: 'success',
+              message: 'department saved successfully'
+            })
+        );
       }
     });
   }

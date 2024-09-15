@@ -236,12 +236,12 @@ export class ProfileInfosComponent implements OnInit, CanExit{
 
     this.userService.update(this.authenticatedUserDetails)
       .subscribe({
-        error: err => {
+        error: () => {
           this.snackBarService.openFromComponent(
             SnackBarComponent,
             notificationConfig({
-              operation: 'profile updated ',
-              success: false
+              type: 'error',
+              message: 'profile update failed'
             })
           );
         },
@@ -249,8 +249,8 @@ export class ProfileInfosComponent implements OnInit, CanExit{
           this.snackBarService.openFromComponent(
             SnackBarComponent,
             notificationConfig({
-              operation: 'profile updated ',
-              success: true
+              type: 'success',
+              message: 'profile updated successfully'
             })
           );
           this.resetBasicFieldSetTemplate();

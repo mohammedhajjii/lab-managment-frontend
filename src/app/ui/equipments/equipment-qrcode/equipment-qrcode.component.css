@@ -1,0 +1,4 @@
+.qrcode-container{
+  display: grid;
+  place-items: center;
+}

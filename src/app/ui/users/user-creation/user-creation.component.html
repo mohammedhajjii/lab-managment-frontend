@@ -27,8 +27,8 @@
 
           <ng-template matStepLabel>General</ng-template>
 
-          <app-tips
-            [tips]="'the email will be used to reset password so please provide a valid email'">
+          <app-tips>
+            <p>* the email will be used to reset password so please provide a valid email</p>
           </app-tips>
 
           <app-form-input
@@ -77,9 +77,10 @@
           <ng-template matStepLabel>Department Details</ng-template>
 
           <app-form-select
+            *only="['ADMIN']"
             [control]="getControl(departmentDetailsFromGroupTemplate, 'department')"
             [selectLabel]="'Department'"
-            [dataSource]="dialogData.departments"
+            [dataSource]="departments"
             [valueMapper]="PropertyMappers.departmentValueMapper"
             [labelMapper]="PropertyMappers.departmentLabelMapper"
             [errorsHandler]="{required: 'Department field is required'}">
@@ -107,7 +108,7 @@
               [control]="getControl(departmentDetailsFromGroupTemplate, 'supervisor')"
               [selectLabel]="'Supervisor'"
               [errorsHandler]="{required: 'supervisor field is required'}"
-              [dataSource]="dialogData.professors"
+              [dataSource]="professors"
               [labelMapper]="PropertyMappers.userLabelMapper"
               [valueMapper]="PropertyMappers.userValueMapper">
 
@@ -117,7 +118,7 @@
             <app-form-select
               [control]="getControl(departmentDetailsFromGroupTemplate, 'secondSupervisor')"
               [selectLabel]="'second supervisor'"
-              [dataSource]="phdStudents"
+              [dataSource]="students"
               [valueMapper]="PropertyMappers.userValueMapper"
               [labelMapper]="PropertyMappers.userLabelMapper"
               [errorsHandler]="{required: 'second supervisor is required'}">

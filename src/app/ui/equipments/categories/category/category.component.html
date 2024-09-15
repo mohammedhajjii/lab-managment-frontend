@@ -1,0 +1,31 @@
+<h2 mat-dialog-title>new category</h2>
+<mat-dialog-content>
+  <app-form-input
+    [control]="categoryNameControl"
+    [inputLabel]="'Category name'"
+    [placeholderText]="'category'"
+    [width]="'90%'"
+    [errorsHandler]="{
+        required: 'category name is required',
+        category: 'category already exists'
+      }">
+  </app-form-input>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <div class="actions-container">
+    <button
+      mat-button
+      [mat-dialog-close]="false"
+      color="warn">
+      cancel
+    </button>
+    <button
+      mat-button
+      [mat-dialog-close]="true"
+      [disabled]="categoryNameControl.invalid"
+      (click)="save()"
+      color="primary">
+      save category
+    </button>
+  </div>
+</mat-dialog-actions>

@@ -57,11 +57,12 @@
           <div class="tab-content">
 
             <app-form-select
+              *only="['ADMIN']"
               [control]="getControl(departmentFormGroup, 'department')"
               [selectLabel]="'Department'"
               [errorsHandler]="{required: 'department field is required!'}"
               [width]="'60%'"
-              [dataSource]="departments"
+              [dataSource]="filteredDepartments"
               [valueMapper]="PropertyMappers.departmentValueMapper"
               [labelMapper]="PropertyMappers.departmentLabelMapper">
             </app-form-select>
@@ -96,7 +97,7 @@
                 [selectLabel]="'Supervisor'"
                 [errorsHandler]="{required: 'Supervisor field is required'}"
                 [width]="'60%'"
-                [dataSource]="professors"
+                [dataSource]="filteredProfessors"
                 [labelMapper]="PropertyMappers.userLabelMapper"
                 [valueMapper]="PropertyMappers.userValueMapper">
 
@@ -110,7 +111,7 @@
                 [control]="getControl(departmentFormGroup, 'secondSupervisor')"
                 [selectLabel]="'Second supervisor'"
                 [errorsHandler]="{required: 'second supervisor is required'}"
-                [dataSource]="phdStudents"
+                [dataSource]="filteredStudents"
                 [valueMapper]="PropertyMappers.userValueMapper"
                 [labelMapper]="PropertyMappers.userLabelMapper"
                 [width]="'60%'">
@@ -127,8 +128,8 @@
           </ng-template>
           <div class="tab-content">
             <div class="control-with-tips">
-              <app-tips
-                [tips]="enableTips">
+              <app-tips>
+                <p>* {{enableTips}}</p>
               </app-tips>
               <app-form-toggle
                 [control]="getControl(generalFormGroup, 'enabled')"
@@ -173,8 +174,8 @@
             </ng-template>
             <div class="tab-content">
               <div class="control-with-tips">
-                <app-tips
-                  [tips]="delegateTips">
+                <app-tips>
+                  <p>* {{delegateTips}}</p>
                 </app-tips>
                 <app-form-toggle
                   [control]="delegatePredicate"

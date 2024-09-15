@@ -1,0 +1,11 @@
+
+
+<div class="filter-group-container">
+  @for (filterControl of filterGroup.filterControls; track filterControl){
+    @if (filterControl.visible){
+      <app-filter-control
+        [filterControl]="filterControl">
+      </app-filter-control>
+    }
+  }
+</div>

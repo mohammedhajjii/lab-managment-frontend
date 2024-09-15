@@ -16,14 +16,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
 
-    this.userService.getUserById('004a9146-3715-452b-b664-d1b4aba42fab')
-      .subscribe({
-        next: user => {
-         user.alter({email: 'test@test,com'});
-          console.log(user);
-        }
-      })
-
+    console.log('test');
   }
 }
 

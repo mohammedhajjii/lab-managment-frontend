@@ -1,5 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from "@angular/material/snack-bar";
+import {NotificationData} from "../../../utils/popup.utils";
 
 @Component({
   selector: 'app-snack-bar',
@@ -9,8 +10,7 @@ import {MAT_SNACK_BAR_DATA, MatSnackBarRef} from "@angular/material/snack-bar";
 export class SnackBarComponent {
 
   constructor(private snackBarRef: MatSnackBarRef<SnackBarComponent>,
-              @Inject(MAT_SNACK_BAR_DATA) public data:
-                {operation: string, success: boolean}) {}
+              @Inject(MAT_SNACK_BAR_DATA) public data: NotificationData) {}
 
 
   hideNotification() {

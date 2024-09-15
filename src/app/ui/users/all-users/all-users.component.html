@@ -5,27 +5,12 @@
 
       <div class="top-card-content">
         <div class="filter-container">
-          @if ((kind === Profile.PHD_STUDENT ||
-            kind === Profile.GUEST) && isAdmin){
-            <mat-form-field>
-              <mat-label>Filtered by professor</mat-label>
-              <mat-select
-                [formControl]="filteredByProf">
-                <mat-option value="*">All</mat-option>
-                @for (professor of professors; track professor){
-                  <mat-option
-                    [value]="PropertyMappers.userValueMapper(professor)">
-                    {{PropertyMappers.userLabelMapper(professor)}}
-                  </mat-option>
-                }
-                <mat-option value="none">Unsupervised</mat-option>
-              </mat-select>
-              <mat-icon
-                color="primary"
-                matSuffix>
-                filter_alt
-              </mat-icon>
-            </mat-form-field>
+          @if (userFilterGroup){
+            <app-filter-group
+              [filterGroup]="userFilterGroup"
+              [subscriberMap]="userFilterSubscriberMap"
+              (valueChanges)="filterChanges($event)">
+            </app-filter-group>
           }
           <mat-form-field>
             <mat-label>search</mat-label>
@@ -76,12 +61,12 @@
           <td
             mat-cell
             *matCellDef="let user">
-            {{user.username}}
             <span
               [matBadge]="user.enabled ? '&check;' : '&#8505;'"
-              [matBadgeColor]="user.enabled ? 'accent': 'warn'"
+              [matBadgeColor]="user.enabled ? 'primary': 'warn'"
               matBadgeSize="small">
           </span>
+            {{user.username}}
           </td>
         </ng-container>
 

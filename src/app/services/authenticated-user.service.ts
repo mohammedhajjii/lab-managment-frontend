@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import {KeycloakProfile} from "keycloak-js";
 import {KeycloakService} from "keycloak-angular";
-import {from} from "rxjs";
+import {from, map, Observable} from "rxjs";
+import {UserDetails} from "../models/user.model";
 
 @Injectable({
   providedIn: 'root'
@@ -12,8 +12,11 @@ export class AuthenticatedUserService {
    constructor(private keycloak: KeycloakService) {}
 
 
-   loadAuthenticatedUserProfile(){
-    return  from(this.keycloak.loadUserProfile(true));
+   loadAuthenticatedUserProfile(): Observable<UserDetails>{
+    return  from(this.keycloak.loadUserProfile(true))
+      .pipe(
+        map(profile => new UserDetails(profile))
+      );
   }
 
   async logout(){

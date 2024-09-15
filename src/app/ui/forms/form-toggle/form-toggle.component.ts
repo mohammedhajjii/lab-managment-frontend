@@ -16,8 +16,9 @@ export class FormToggleComponent {
   @Input() toggleColor: 'primary' | 'accent' | 'warn' = 'primary';
   @Input() tooltipContent: string;
   @Input() tooltipPosition: 'before' | 'after' | 'above' | 'right' | 'left' | 'below' = 'right';
-
+  @Input() width: string = '60%';
   @ViewChild(MatTooltip) tooltip: MatTooltip;
+
 
 
   tooltipToggle(): void {

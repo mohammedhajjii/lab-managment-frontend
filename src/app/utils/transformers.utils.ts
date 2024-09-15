@@ -1,13 +1,6 @@
-import {UserAttributes, UserDetails} from "../models/user.model";
+import {UserDetails} from "../models/user.model";
 import {Department} from "../models/department.model";
-
-export function mapToSingle<T>(record: {[K in keyof T]: T[K]}) : void {
-  Object.keys(record)
-    .map(key => key as keyof T)
-    .forEach(key => {
-      record[key] = Array.isArray(record[key]) ? (record[key] as any[]).pop() : record[key];
-    })
-}
+import {Category} from "../models/equipment.model";
 
 /** ----------------------- define data sorting accessor --------------------------**/
 
@@ -40,14 +33,20 @@ export const departmentSortingDataAccessor:
 }
 
 
+export const categorySortingDataAccessor:
+  (category: Category, header: string) => string | number =
+  (category, header) => {
+    switch (header){
+      case 'ID': return category.id;
+      case 'Name': return  category.name;
+      default: return -1;
+    }
+  }
+
+
 
 /*
 * Augmented<T> help us to receive the users structure from keycloak, and transformed later
 * */
 export type Augmented<T> = Partial<T> & {[key: string]: any};
 
-export function mapToUserDetails(input: Augmented<UserDetails>): UserDetails{
-  const user: UserDetails = new UserDetails(input);
-  mapToSingle<UserAttributes>(user.attributes);
-  return user;
-}

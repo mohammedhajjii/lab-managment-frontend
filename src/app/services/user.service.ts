@@ -11,7 +11,7 @@ import {
   Observable,
   of,
   switchMap,
-  take,
+  take, tap,
   toArray
 } from "rxjs";
 import {Group, Profile, unsupervised, UserDetails} from "../models/user.model";
@@ -203,20 +203,7 @@ export class UserService{
     return this.http.put(url, ['UPDATE_PASSWORD']);
   }
 
-  /**
-   * isAlone used to test if a prof supervise any of students or guest
-   * @param id : prof id
-   */
-  isAlone(id: string): Observable<boolean>{
-    return merge(this.getStudents(), this.getGuests())
-      .pipe(
-        mergeAll(),
-        map(studentOrGuest => studentOrGuest.attributes.supervisor === id),
-        filter(result => result),
-        take(1),
-        defaultIfEmpty(false)
-      );
-  }
+
 
   countWithEmail(email: string, except?: string): Observable<number>{
     return this.getAllUsers().pipe(
@@ -255,22 +242,25 @@ export class UserService{
   }
 
 
-  getSupervisedBySupervisor(id: string, kind: Profile): Observable<UserDetails[]>{
-    return this.getUsersByProfile(kind)
+  getUsersByDepartment(deptId: string): Observable<UserDetails[]>{
+    return merge(this.getProfessors(), this.getStudents(), this.getGuests())
       .pipe(
         mergeAll(),
-        filter(user => user.attributes.supervisor === id),
+        filter(user => user.attributes.department === deptId),
         toArray()
       );
   }
 
-  getUnsupervised(kind: Profile): Observable<UserDetails[]>{
-    return this.getUsersByProfile(kind)
-      .pipe(
-        mergeAll(),
-        filter(user => unsupervised(user)),
-        toArray()
-      );
+  afterDeleteDepartment(deptId: string): Observable<any>{
+    return this.getUsersByDepartment(deptId).pipe(
+      mergeAll(),
+      concatMap(user => {
+        user.attributes.department = 'none';
+        return this.update(user);
+      })
+    );
   }
+
+
 
 }

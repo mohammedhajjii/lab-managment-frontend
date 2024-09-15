@@ -1,0 +1,53 @@
+<div class="app-container">
+  <mat-card>
+    <mat-card-content>
+
+      <div class="nav-bar-elements">
+        <app-filter-group
+          [filterGroup]="equipmentFiler"
+          [subscriberMap]="{}"
+          (valueChanges)="onFilterGroupValuesChanges($event)">
+        </app-filter-group>
+
+        <app-search
+          (onSearchKeyword)="onSearchKeyword($event)">
+        </app-search>
+
+        <button
+          mat-button
+          (click)="newEquipment()"
+          color="primary">
+          new equipment
+        </button>
+
+        <button
+          mat-button
+          (click)="refresh()"
+          color="primary">
+          refresh
+        </button>
+      </div>
+
+
+
+    </mat-card-content>
+    <mat-card-actions>
+
+    </mat-card-actions>
+  </mat-card>
+
+  <div class="equipments-container">
+    @for (equipment of displayedEquipments; track equipment){
+      <app-equipment-preview
+        [equipment]="equipment"
+        (onDeleteEquipment)="refresh()">
+      </app-equipment-preview>
+    } @empty {
+      <mat-card>
+        <mat-card-content>
+          No equipment found
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+</div>

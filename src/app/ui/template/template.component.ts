@@ -47,7 +47,20 @@ export class TemplateComponent implements OnInit{
        itemIcon: 'business',
        forRoute: ['/admin/departments'],
        onlyFor: ['ADMIN']
+     },
+     {
+       itemLabel: 'Equipment',
+       itemIcon: 'handyman',
+       forRoute: ['/equipments'],
+       onlyFor: ['ADMIN', 'PROFESSOR', 'DELEGATE']
+     },
+     {
+       itemLabel: 'Categories',
+       itemIcon: 'group',
+       forRoute: ['/equipments/categories'],
+       onlyFor: ['ADMIN', 'PROFESSOR', 'DELEGATE']
      }
+
   ];
 
 

@@ -1,6 +1,6 @@
 import {AsyncValidatorFn, ValidatorFn} from "@angular/forms";
 import {Supervisor} from "../models/user.model";
-import {PropertyMapper} from "./controls.template";
+import {Mapper} from "./controls.template";
 
 
 export interface FieldDescriptor<T, R>{
@@ -14,8 +14,8 @@ export interface FieldDescriptor<T, R>{
   asyncValidators?: AsyncValidatorFn | AsyncValidatorFn[];
   errors?: Record<string, string>;
   datasource?: T[];
-  valueMapper?: PropertyMapper<T>;
-  labelMapper?: PropertyMapper<T>;
+  valueMapper?: Mapper<T>;
+  labelMapper?: Mapper<T>;
   controlWidth?: string;
 }
 
@@ -30,8 +30,8 @@ export class Field<T = any, R extends (T | T[keyof T]) = T> {
   private readonly _asyncValidators?: AsyncValidatorFn | AsyncValidatorFn[];
   private readonly _errors?: Record<string, string>;
   private readonly _datasource?: T[];
-  private readonly _valueMapper?: PropertyMapper<T>;
-  private readonly _labelMapper?: PropertyMapper<T>;
+  private readonly _valueMapper?: Mapper<T>;
+  private readonly _labelMapper?: Mapper<T>;
   private readonly _controlWidth?: string;
 
   constructor(field: FieldDescriptor<T, R>) {
@@ -101,11 +101,11 @@ export class Field<T = any, R extends (T | T[keyof T]) = T> {
     return this._datasource;
   }
 
-  get valueMapper(): PropertyMapper<T> {
+  get valueMapper(): Mapper<T> {
     return this._valueMapper;
   }
 
-  get labelMapper(): PropertyMapper<T> {
+  get labelMapper(): Mapper<T> {
     return this._labelMapper;
   }
 

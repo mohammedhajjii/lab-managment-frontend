@@ -1,0 +1,24 @@
+
+.app-badge{
+  display: grid;
+  place-items: center;
+  width: 160px;
+  height: 20px;
+  border-radius: 30px;
+  font-weight: bold;
+}
+
+.AVAILABLE{
+  background-color: #17B26A;
+  color: #ffffff;
+}
+
+.OUT_OF_SERVICE{
+  background-color: #FFDE4D;
+  color: #000000;
+}
+
+.DECOMMISSIONED{
+  background-color: #FF0000;
+  color: #ffffff;
+}

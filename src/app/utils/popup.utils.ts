@@ -1,18 +1,16 @@
 import {Profile, UserDetails} from "../models/user.model";
-import {Observable} from "rxjs";
-import {MatDialogConfig} from "@angular/material/dialog";
+import {MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBarConfig} from "@angular/material/snack-bar";
-import {KeycloakProfile} from "keycloak-js";
 import {Department} from "../models/department.model";
+import {Category, Equipment} from "../models/equipment.model";
 
 export interface UserCreationDialogData {
   kind: Profile;
   isAdmin: boolean;
-  userContext: KeycloakProfile,
+  userContext: UserDetails,
   departments?: Department[],
   professors?: UserDetails[],
-  students?: UserDetails[],
-  secondSupervisorList?: Observable<UserDetails[]>
+  students?: UserDetails[]
 }
 
 export enum DialogClosingState{
@@ -52,8 +50,8 @@ export const confirmDialogConfig = function (data: ConfirmDialogData): MatDialog
 
 
 export  interface NotificationData{
-  operation: string;
-  success: boolean;
+  message: string;
+  type: 'success' | 'error'
 }
 
 
@@ -87,7 +85,66 @@ export const departmentPopupConfig: DepartmentPopupConfiguration =
   return {
     autoFocus: true,
     disableClose: true,
-    minWidth: '35%',
+    width: '40%',
     data: data
   }
+}
+
+/* ------------------------------------------ Equipment dialogs -----------------------------*/
+
+export interface EquipmentPopupData {
+  categories: Category[];
+}
+
+
+export interface CategoryPopupData {
+  mode: 'create' | 'update';
+  id?: number;
+  name?: string;
+}
+
+export type EquipmentPopupDialogConfiguration =
+  (data: EquipmentPopupData) => MatDialogConfig<EquipmentPopupData>;
+
+export type CategoryPopupDialogConfiguration =
+  (data: CategoryPopupData) => MatDialogConfig<CategoryPopupData>;
+
+export const equipmentPopupConfig: EquipmentPopupDialogConfiguration =
+    data => {
+      return {
+        autoFocus: true,
+        disableClose: true,
+        width: '60%',
+        data: data
+      }
+}
+
+
+export const categoryPopupConfig: CategoryPopupDialogConfiguration =
+  data => {
+    return {
+      disableClose: true,
+      autoFocus: true,
+      width: '40%',
+      data: data
+    }
+}
+
+
+export interface QrCodePopupData{
+  name: string;
+  qrcode: string
+}
+
+export type QrCodePopupConfig =
+  (qrcode: QrCodePopupData) => MatDialogConfig<QrCodePopupData>;
+
+export const qrcodePopupConfig: QrCodePopupConfig =
+  qrcode => {
+    return {
+      disableClose: true,
+      autoFocus: true,
+      width: '40%',
+      data: qrcode
+    }
 }

@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Inject, OnInit} from '@angular/core';
+import {AfterViewInit, Component, Inject, NgZone, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Credential, Profile, UserAttributes, UserDetails} from "../../../models/user.model";
 import {
@@ -15,10 +15,11 @@ import {
   CredentialsFormGroupData,
   CredentialsFromGroupTemplate, DepartmentDetailsFormGroupData,
   DepartmentDetailsFromGroupTemplate, GeneralFormGroupData,
-  GeneralFormGroupTemplate, getControl, PropertyMappers
+  GeneralFormGroupTemplate, getControl, Mappers
 } from "../../../utils/controls.template";
-import {switchMap} from "rxjs";
-import {keyframes} from "@angular/animations";
+import {Department} from "../../../models/department.model";
+
+
 
 @Component({
   selector: 'app-user-creation',
@@ -38,15 +39,25 @@ export class UserCreationComponent implements OnInit, AfterViewInit {
 
   protected readonly Profile = Profile;
   kind!: Profile;
-  phdStudents!: UserDetails[];
+
+
+  departments!: Department[];
+  professors!: UserDetails[];
+  students!: UserDetails[];
 
 
  constructor(private userService: UserService,
+             private ngZone: NgZone,
              private snackBar: MatSnackBar,
              private dialogRef: MatDialogRef<UserCreationComponent>, //on submit
              @Inject(MAT_DIALOG_DATA) public dialogData: UserCreationDialogData) {}
 
   ngOnInit(): void {
+
+   this.departments = this.dialogData.departments;
+   this.professors = this.dialogData.professors;
+   this.students = this.dialogData.students;
+
 
    this.generalFormGroupTemplate = new FormGroup<GeneralFormGroupTemplate>({
      firstName: new FormControl<string>('', Validators.required),
@@ -169,13 +180,13 @@ export class UserCreationComponent implements OnInit, AfterViewInit {
     console.log(userDetails);
 
     this.userService.create(userDetails).subscribe({
-      next: value => {
+      complete: () => {
         this.snackBar.openFromComponent<SnackBarComponent>(
           SnackBarComponent,
           notificationConfig(
             {
-              operation: 'user created ',
-              success: true
+              type: 'success',
+              message: 'user created successfully'
             }
           )
         );
@@ -186,8 +197,8 @@ export class UserCreationComponent implements OnInit, AfterViewInit {
           SnackBarComponent,
           notificationConfig(
             {
-              operation: 'user creation ',
-              success: false
+              type: 'error',
+              message: 'user creation failed'
             }
           )
         );
@@ -199,34 +210,52 @@ export class UserCreationComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
 
-   if(this.kind === Profile.PHD_STUDENT ||
-     this.kind === Profile.GUEST) {
+   getControl(this.departmentDetailsFromGroupTemplate, 'department')
+     .valueChanges
+     .subscribe({
+       next: department => {
+         this.professors = this.dialogData.professors
+           .filter(prof => prof.attributes.department === department);
 
+         if (this.departmentDetailsFromGroupTemplate.contains('supervisor')){
+           getControl(this.departmentDetailsFromGroupTemplate, 'supervisor')
+             .reset(null);
+         }
+       }
+     });
+
+   if (this.departmentDetailsFromGroupTemplate.contains('supervisor')){
      getControl(this.departmentDetailsFromGroupTemplate, 'supervisor')
        .valueChanges
-       .pipe(
-         switchMap(supervisor => this.userService.getStudentsByProfessor(supervisor))
-       )
        .subscribe({
-         next: students => {
-           this.phdStudents = students;
+         next: supervisor => {
+
+           this.students = this.dialogData.students
+             .filter(student => student.attributes.supervisor === supervisor);
+
            if (this.departmentDetailsFromGroupTemplate.contains('secondSupervisor'))
              getControl(this.departmentDetailsFromGroupTemplate, 'secondSupervisor')
-               .reset();
+               .reset(null);
          }
        });
-
-     getControl(this.departmentDetailsFromGroupTemplate, 'supervisor')
-       .setValue(this.dialogData.isAdmin ? null: this.dialogData.userContext.id);
-
    }
 
+   if (!this.dialogData.isAdmin){
+
+     setTimeout(() => {
+       getControl(this.departmentDetailsFromGroupTemplate, 'department')
+         .setValue(this.dialogData.userContext.attributes.department);
+
+       getControl(this.departmentDetailsFromGroupTemplate, 'supervisor')
+         .setValue(this.dialogData.userContext.id);
+     });
+   }
 
   }
 
 
   protected readonly DialogClosingState = DialogClosingState;
-  protected readonly PropertyMappers = PropertyMappers;
+  protected readonly PropertyMappers = Mappers;
   protected readonly getControl = getControl;
 
 

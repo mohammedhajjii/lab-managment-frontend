@@ -153,7 +153,6 @@ color: (
 
 @include  mat.icon-theme($app-third-theme);
 @include mat.form-field-theme($app-third-theme);
-@include mat.badge-theme($app-third-theme);
 
 
 $app-blue-white-colors: (
@@ -219,6 +218,20 @@ $app-fourth-theme: mat.define-light-theme((
 @include mat.progress-spinner-theme($app-fourth-theme);
 @include mat.slide-toggle-theme($app-fourth-theme);
 
+
+
+$app-five-theme: mat.define-light-theme((
+  color: (
+    theme-type: light,
+    primary: mat.define-palette($app-green-palette, 600),
+    accent: mat.define-palette(mat.$yellow-palette, 500),
+    warn: mat.define-palette(mat.$red-palette, 500)
+  )
+));
+
+@include mat.badge-theme($app-five-theme);
+
+
 /* -------------------------------------------------------------------------------- */
 
 .spacer{
@@ -233,10 +246,13 @@ $app-fourth-theme: mat.define-light-theme((
 
 .mat-mdc-dialog-container {
   --mat-dialog-actions-alignment: end;
+  --mat-dialog-actions-padding: 20px;
   --mdc-dialog-container-shape: 20px;
 }
 
-
+.mat-mdc-dialog-content{
+  padding: 15px 20px !important;
+}
 
 
 .mdc-button {

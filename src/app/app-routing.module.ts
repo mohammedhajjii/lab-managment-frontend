@@ -23,9 +23,12 @@ import {
 import {ErrorComponent} from "./ui/error/error.component";
 import {AllUsersComponent} from "./ui/users/all-users/all-users.component";
 import {leaveGuard} from "./guards/leave.guard";
-import {departmentResolver} from "./resolvers/department.resolver";
-import {of} from "rxjs";
+import {departmentsResolver} from "./resolvers/departmentsResolver";
 import {AllDepartmentsComponent} from "./ui/departments/all-departments/all-departments.component";
+import {EquipmentsComponent} from "./ui/equipments/equipments/equipments.component";
+import {allEquipmentCategoriesResolver, allEquipmentResolver, equipmentResolver} from "./resolvers/equipment.resolver";
+import {CategoriesComponent} from "./ui/equipments/categories/categories/categories.component";
+import {EquipmentDetailsComponent} from "./ui/equipments/equipment-details/equipment-details.component";
 
 
 
@@ -55,7 +58,7 @@ const routes: Routes = [
     resolve: {
       authenticatedUserDetails: parametricUserResolver('id'),
       isDelegate: parametricDelegatePredicateResolver('id'),
-      departments: departmentResolver,
+      departments: departmentsResolver,
       manager: managerDetailsResolver,
       coManager: coManagerDetailsResolver
     }
@@ -73,8 +76,9 @@ const routes: Routes = [
         resolve: {
           users: allProfessorsResolver,
           profile: profileResolver,
+          departments: departmentsResolver,
           professors: emptyUserListResolver,
-          departments: departmentResolver
+          students: emptyUserListResolver
         }
       },
       {
@@ -84,8 +88,10 @@ const routes: Routes = [
         resolve: {
           managedUser: parametricUserResolver('pid'),
           profile: profileResolver,
-          departments: departmentResolver,
-          delegatePredicate: defaultDelegatePredicateResolver
+          delegatePredicate: defaultDelegatePredicateResolver,
+          departments: departmentsResolver,
+          professors: emptyUserListResolver,
+          students: emptyUserListResolver
         }
       },
       {
@@ -94,8 +100,9 @@ const routes: Routes = [
         resolve: {
           users: allStudentsResolver,
           profile: profileResolver,
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          departments: departmentResolver
+          students: emptyUserListResolver
         }
       },
       {
@@ -105,9 +112,10 @@ const routes: Routes = [
         resolve: {
           managedUser: parametricUserResolver('sid'),
           profile: profileResolver,
-          departments: departmentResolver,
+          delegatePredicate: parametricDelegatePredicateResolver('sid'),
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          delegatePredicate: parametricDelegatePredicateResolver('sid')
+          students: emptyUserListResolver
         }
       },
       {
@@ -116,8 +124,9 @@ const routes: Routes = [
         resolve: {
           users: allGuestResolver,
           profile: profileResolver,
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          departments: departmentResolver
+          students: allStudentsResolver
         }
       },
       {
@@ -127,18 +136,19 @@ const routes: Routes = [
         resolve: {
           managedUser: parametricUserResolver('gid'),
           profile: profileResolver,
-          departments: departmentResolver,
+          delegatePredicate: defaultDelegatePredicateResolver,
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          delegatePredicate: defaultDelegatePredicateResolver
+          students: allStudentsResolver
         }
       },
       {
         path: 'departments',
         component: AllDepartmentsComponent,
         resolve: {
-          departments: departmentResolver
+          departments: departmentsResolver
         }
-      }
+      },
     ]
   },
   {
@@ -155,7 +165,8 @@ const routes: Routes = [
           users: subStudentsResolver,
           profile: profileResolver,
           professors: allProfessorsResolver,
-          departments: departmentResolver
+          departments: departmentsResolver,
+          students: emptyUserListResolver
         }
       },
       {
@@ -165,9 +176,10 @@ const routes: Routes = [
         resolve: {
           managedUser: parametricUserResolver('sid'),
           profile: profileResolver,
-          departments: departmentResolver,
+          delegatePredicate: parametricDelegatePredicateResolver('sid'),
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          delegatePredicate: parametricDelegatePredicateResolver('sid')
+          students: emptyUserListResolver
         }
       },
       {
@@ -177,7 +189,8 @@ const routes: Routes = [
           users: subGuestsResolver,
           profile: profileResolver,
           professors: allProfessorsResolver,
-          departments: departmentResolver
+          departments: departmentsResolver,
+          students: allStudentsResolver
         }
       },
       {
@@ -187,9 +200,41 @@ const routes: Routes = [
         resolve: {
           managedUser: parametricUserResolver('gid'),
           profile: profileResolver,
-          departments: departmentResolver,
+          delegatePredicate: defaultDelegatePredicateResolver,
+          departments: departmentsResolver,
           professors: allProfessorsResolver,
-          delegatePredicate: defaultDelegatePredicateResolver
+          students: allStudentsResolver
+        }
+      }
+    ]
+  },
+  {
+    path: 'equipments',
+    canActivateChild: [childGuardGuard],
+    data: {
+      roles: ['ADMIN', 'PROFESSOR', 'DELEGATE']
+    },
+    children: [
+      {
+        path: '',
+        component: EquipmentsComponent,
+        resolve: {
+          equipments: allEquipmentResolver,
+          categories: allEquipmentCategoriesResolver
+        }
+      },
+      {
+        path: 'categories',
+        component: CategoriesComponent,
+        resolve: {
+          categories: allEquipmentCategoriesResolver
+        }
+      },
+      {
+        path: ':id',
+        component: EquipmentDetailsComponent,
+        resolve: {
+          equipment: equipmentResolver
         }
       }
     ]
@@ -198,8 +243,6 @@ const routes: Routes = [
     path: '**',
     component: ErrorComponent
   }
-
-
 ];
 
 @NgModule({

@@ -1,0 +1,9 @@
+.app-container{
+  display: grid;
+  row-gap: 20px;
+}
+
+.equipment-img{
+  display: grid;
+  place-items: center;
+}

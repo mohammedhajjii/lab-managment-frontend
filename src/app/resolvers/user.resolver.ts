@@ -3,13 +3,12 @@ import {Supervisor, UserDetails} from "../models/user.model";
 import {UserService} from "../services/user.service";
 import {inject} from "@angular/core";
 import {catchError, from, map, of, switchMap} from "rxjs";
-import {KeycloakProfile} from "keycloak-js";
-import {KeycloakService} from "keycloak-angular";
+import {AuthenticatedUserService} from "../services/authenticated-user.service";
 
 //used
-export const profileResolver: ResolveFn<KeycloakProfile> = () => {
-  const keycloak: KeycloakService = inject(KeycloakService);
-  return from(keycloak.loadUserProfile(true))
+export const profileResolver: ResolveFn<UserDetails> = () => {
+  const authenticatedUserService: AuthenticatedUserService = inject<AuthenticatedUserService>(AuthenticatedUserService);
+  return from(authenticatedUserService.loadAuthenticatedUserProfile());
 }
 
 export const emptyUserListResolver: ResolveFn<UserDetails[]> = () => {
@@ -102,3 +101,5 @@ export const parametricDelegatePredicateResolver: parametricPredicateFn = id => 
 export const defaultDelegatePredicateResolver: ResolveFn<boolean> = () => {
   return of(false);
 }
+
+

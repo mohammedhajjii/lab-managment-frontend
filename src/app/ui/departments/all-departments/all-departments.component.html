@@ -130,7 +130,7 @@
             *matCellDef="let dept">
             <button
               mat-icon-button
-              (click)="deleteDepartment(dept.id)"
+              (click)="deleteDepartment(dept.id, dept.name)"
               color="warn">
               <mat-icon>delete</mat-icon>
             </button>

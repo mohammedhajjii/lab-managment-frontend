@@ -2,10 +2,9 @@ import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {normalizeToNull, Profile, UserDetails} from "../../../models/user.model";
 import {ActivatedRoute} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {KeycloakProfile} from "keycloak-js";
 import {
   DepartmentDetailsFromGroupTemplate,
-  GeneralFormGroupTemplate, getControl, PropertyMappers
+  GeneralFormGroupTemplate, getControl, Mappers
 } from "../../../utils/controls.template";
 import {asyncEmailValidator, asyncStudentCodeValidator} from "../../../validators/async.validators";
 import {UserService} from "../../../services/user.service";
@@ -19,16 +18,21 @@ import {iif, Observable, switchMap} from "rxjs";
 import {CanExit} from "../../../guards/leave.guard";
 import {MatDialog} from "@angular/material/dialog";
 import {ConfirmComponent} from "../../popup/confirm/confirm.component";
+import {Predicates} from "../../../utils/filters.utils";
 
 @Component({
   selector: 'app-user-representation',
   templateUrl: './user-representation.component.html',
   styleUrl: './user-representation.component.css'
 })
-export class UserRepresentationComponent implements OnInit ,CanExit{
+export class UserRepresentationComponent implements OnInit, AfterViewInit ,CanExit{
+
+  protected readonly Profile = Profile;
+  protected readonly PropertyMappers = Mappers;
+  protected readonly getControl = getControl;
 
   managedUser: UserDetails;
-  managerProfile!: KeycloakProfile;
+  managerProfile!: UserDetails;
 
   //formGroups:
   generalFormGroup!: FormGroup<GeneralFormGroupTemplate>;
@@ -38,9 +42,15 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
   //fieldSet
   profileOverviewFieldSet!: FieldSet<ProfileOverview>;
 
-  departments!: Department[];
-  professors!: UserDetails[];
-  phdStudents!: UserDetails[];
+  allDepartments!: Department[];
+  allProfessors!: UserDetails[];
+  allStudents!: UserDetails[];
+
+  filteredDepartments!: Department[];
+  filteredProfessors!: UserDetails[];
+  filteredStudents!: UserDetails[];
+
+
 
   readonly delegatePredicate: FormControl<boolean> = new FormControl<boolean>(null);
 
@@ -49,7 +59,6 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
   readonly delegateTips: string = 'make the current student as a delegate, so he can act like a professor';
 
   displayRestPasswordProcessSpinner: boolean = false;
-  firstLoading: boolean = true;
 
   constructor(private activatedRoute: ActivatedRoute,
               private datePipe: DatePipe,
@@ -63,13 +72,18 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
     this.activatedRoute.data.subscribe({
       next: data => {
         this.managedUser = data['managedUser'] as UserDetails;
-        this.managerProfile = data['profile'] as KeycloakProfile;
-        this.departments = data['departments'] as Department[];
-        this.professors = data['professors'] as UserDetails[];
+        this.managerProfile = data['profile'] as UserDetails;
         this.delegatePredicate.setValue(data['delegatePredicate'] as boolean);
+        this.allDepartments = data['departments'] as Department[];
+        this.allProfessors = data['professors'] as UserDetails[];
+        this.allStudents = data['students'] as UserDetails[];
       }
     });
 
+
+    this.filteredDepartments = this.allDepartments.filter(Predicates.all);
+    this.filteredProfessors = this.allProfessors.filter(Predicates.all);
+    this.filteredStudents = this.allStudents.filter(Predicates.all);
 
     this.profileOverviewFieldSet = new FieldSet<ProfileOverview>({
       id: new Field<string>({
@@ -108,7 +122,7 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
     });
 
     this.departmentFormGroup = new FormGroup<DepartmentDetailsFromGroupTemplate>({
-      department: new FormControl<string>(this.managedUser.attributes.department, {
+      department: new FormControl<string>(null, {
         validators: Validators.required
       })
     });
@@ -120,7 +134,7 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
       managedUserProfile === Profile.GUEST){
 
       this.departmentFormGroup.addControl('studentCode', new FormControl<string>(
-        this.managedUser.attributes.studentCode,
+        null,
         {
           validators: [Validators.required, Validators.pattern(/^[A-Z]\d{9}$/)],
           asyncValidators: asyncStudentCodeValidator(this.userService, this.managedUser.id)
@@ -128,7 +142,7 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
       ));
 
       this.departmentFormGroup.addControl('subject', new FormControl<string>(
-        this.managedUser.attributes.subject,
+       null,
         {
           validators: Validators.required
         }
@@ -142,32 +156,13 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
       ));
 
 
-      getControl(this.departmentFormGroup, 'supervisor')
-        .valueChanges
-        .pipe(
-          switchMap(supervisor => this.userService.getStudentsByProfessor(supervisor))
-        )
-        .subscribe({
-          next: students => {
-            this.phdStudents = students;
-            if(!this.firstLoading && this.departmentFormGroup.contains('secondSupervisor')){
-              getControl(this.departmentFormGroup, 'secondSupervisor')
-                .reset(null);
-            }
-            else this.firstLoading = false;
-          }
-        });
-
-      getControl(this.departmentFormGroup, 'supervisor')
-        .setValue(normalizeToNull(this.managedUser.attributes.supervisor));
-
     }
 
 
     if (managedUserProfile === Profile.GUEST){
 
       this.departmentFormGroup.addControl('secondSupervisor', new FormControl<string>(
-        normalizeToNull(this.managedUser.attributes.secondSupervisor),
+        null,
         {
           validators: Validators.required
         }
@@ -175,6 +170,51 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
 
     }
   }
+
+
+  ngAfterViewInit(): void {
+
+    getControl(this.departmentFormGroup, 'department')
+      .valueChanges
+      .subscribe({
+        next: department => {
+
+          if (this.departmentFormGroup.contains('supervisor')){
+
+            this.filteredProfessors = this.allProfessors
+              .filter(prof => prof.attributes.department === department);
+
+            if (this.departmentFormGroup.contains('supervisor')){
+              getControl(this.departmentFormGroup, 'supervisor')
+                .reset(null);
+            }
+          }
+        }
+      });
+
+    if (this.departmentFormGroup.contains('supervisor')){
+      getControl(this.departmentFormGroup, 'supervisor')
+        .valueChanges
+        .subscribe({
+          next: prof => {
+            this.filteredStudents = this.allStudents
+              .filter(student => student.attributes.supervisor === prof);
+
+            if (this.departmentFormGroup.contains('secondSupervisor')){
+              getControl(this.departmentFormGroup, 'secondSupervisor')
+                .reset(null);
+            }
+          }
+        });
+    }
+
+    setTimeout(() => {
+      this.reset();
+    });
+
+
+  }
+
 
   saveUserDetails(): void{
     this.managedUser.alter({
@@ -189,12 +229,12 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
 
     this.userService.update(this.managedUser)
       .subscribe({
-        error: err => {
+        error: () => {
           this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
             SnackBarComponent,
             notificationConfig({
-              operation: 'user update ',
-              success: false
+              type: 'error',
+              message: 'update user details failed'
             })
           )
         },
@@ -202,8 +242,8 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
           this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
             SnackBarComponent,
             notificationConfig({
-              operation: 'user updated  ',
-              success: true
+              type: 'success',
+              message: 'user details updated successfully'
             })
           )
         }
@@ -216,12 +256,12 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
     this.displayRestPasswordProcessSpinner = true;
       this.userService.resetUserPassword(id)
         .subscribe({
-          error: err => {
+          error: () => {
             this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
               SnackBarComponent,
               notificationConfig({
-                operation: 'reset password ',
-                success: false
+                type: 'error',
+                message: 'reset password failed'
               })
             );
             this.displayRestPasswordProcessSpinner = false;
@@ -230,8 +270,8 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
             this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
               SnackBarComponent,
               notificationConfig({
-                operation: 'reset password email was sent  ',
-                success: true
+                message: 'reset password email was sent',
+                type: 'success'
               })
             );
             this.displayRestPasswordProcessSpinner = false;
@@ -249,8 +289,8 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
         this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
           SnackBarComponent,
           notificationConfig({
-            operation: 'update student role ',
-            success: false
+            message: 'update student role failed',
+            type: 'error'
           })
         );
       },
@@ -258,8 +298,8 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
         this.snackBarService.openFromComponent<SnackBarComponent, NotificationData>(
           SnackBarComponent,
           notificationConfig({
-            operation: 'student role has been updated ',
-            success: true
+            message: 'student role has been updated successfully',
+            type: 'success'
           })
         );
       }
@@ -287,36 +327,18 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
     });
 
     this.departmentFormGroup.reset({
-      department: this.managedUser.attributes.department
+      department: normalizeToNull(this.managedUser.attributes.department),
+      studentCode: this.managedUser.attributes.studentCode,
+      supervisor: normalizeToNull(this.managedUser.attributes.supervisor),
+      subject: this.managedUser.attributes.subject,
+      secondSupervisor: normalizeToNull(this.managedUser.attributes.secondSupervisor),
+      description: this.managedUser.attributes.description
     });
 
-
-    const managedUserProfile: Profile = this.managedUser.attributes.profile;
-
-    if (managedUserProfile === Profile.PHD_STUDENT ||
-      managedUserProfile === Profile.GUEST){
-
-      getControl(this.departmentFormGroup, 'studentCode')
-        .reset(this.managedUser.attributes.studentCode);
-
-      getControl(this.departmentFormGroup, 'subject')
-        .reset(this.managedUser.attributes.subject);
-
-      getControl(this.departmentFormGroup, 'supervisor')
-        .reset(this.managedUser.attributes.supervisor);
-
-    }
-
-    if (managedUserProfile === Profile.GUEST){
-      getControl(this.departmentFormGroup, 'secondSupervisor')
-        .reset( this.managedUser.attributes.secondSupervisor);
-    }
-
-    this.firstLoading = true;
   }
 
 
-  protected readonly Profile = Profile;
+
 
   canExit(): Observable<boolean> | Promise<boolean> | boolean {
 
@@ -333,8 +355,8 @@ export class UserRepresentationComponent implements OnInit ,CanExit{
     return true;
   }
 
-  protected readonly PropertyMappers = PropertyMappers;
 
-  protected readonly getControl = getControl;
+
+
 
 }

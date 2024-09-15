@@ -1,0 +1,17 @@
+.app-container{
+  display: grid;
+  row-gap: 20px;
+}
+
+.bar-tools{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.buttons-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}

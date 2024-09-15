@@ -13,7 +13,7 @@ export class FormInputComponent {
   @Input() control: FormControl;
   @Input() inputLabel: string;
   @Input() placeholderText: string;
-  @Input() inputType: 'text' | 'email' | 'tel' = 'text';
+  @Input() inputType: 'text' | 'email' | 'tel' | 'file' = 'text';
   @Input() tooltipContent: string;
   @Input() tooltipPosition: 'before' | 'after' | 'above' | 'right' | 'left' | 'below' = 'above';
   @Input() errorsHandler: Record<string, string> = {};
@@ -21,6 +21,7 @@ export class FormInputComponent {
   @Input() hint: string;
   @Input() textPrefix: string;
   @Input() width: string = '60%';
+  @Input() accept?: string;
   @ViewChild(MatTooltip) tooltip: MatTooltip;
   protected readonly Object = Object;
 

@@ -16,12 +16,13 @@ mat-sidenav{
 
 .main-container{
   overflow-y: auto;
-  padding: 50px;
+  padding: 35px;
 }
 
 mat-sidenav-content{
   margin-top: 64px;
-  background-color: #F2F4FE;
+  background-color: #E6EFFE;
+  height: 100vh;
 }
 
 .spacer {
