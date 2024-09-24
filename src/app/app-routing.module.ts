@@ -234,7 +234,8 @@ const routes: Routes = [
         path: ':id',
         component: EquipmentDetailsComponent,
         resolve: {
-          equipment: equipmentResolver
+          equipment: equipmentResolver,
+          categories: allEquipmentCategoriesResolver
         }
       }
     ]

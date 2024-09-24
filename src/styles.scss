@@ -230,6 +230,7 @@ $app-five-theme: mat.define-light-theme((
 ));
 
 @include mat.badge-theme($app-five-theme);
+@include mat.chips-theme($app-five-theme);
 
 
 /* -------------------------------------------------------------------------------- */

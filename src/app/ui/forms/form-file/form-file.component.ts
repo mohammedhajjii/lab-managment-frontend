@@ -38,7 +38,7 @@ export class FormFileComponent implements OnInit{
     this.formGroup = new FormGroup({
       name: new FormControl<string>(null, {
         validators: Validators.required,
-        updateOn: "blur"
+        updateOn: "change"
       } )
     });
 
@@ -93,6 +93,6 @@ export class FormFileComponent implements OnInit{
 
 
   isInvalid(): boolean {
-    return this.name.invalid && this.name.touched;
+    return (this.name.touched && this.name.invalid);
   }
 }

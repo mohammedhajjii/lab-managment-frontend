@@ -4,7 +4,7 @@ import {EquipmentFormGroup, getControl, Mappers} from "../../../utils/controls.t
 import {equipmentAsyncValidator} from "../../../validators/equipment.async.validators";
 import {EquipmentService} from "../../../services/equipment.service";
 import {Equipment} from "../../../models/equipment.model";
-import {MAT_DIALOG_DATA} from "@angular/material/dialog";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 import {EquipmentPopupData, notificationConfig, NotificationData} from "../../../utils/popup.utils";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackBarComponent} from "../../popup/snack-bar/snack-bar.component";
@@ -21,6 +21,7 @@ export class NewEquipmentComponent implements OnInit{
   formGroup!: FormGroup<EquipmentFormGroup>;
 
   constructor(private equipmentService: EquipmentService,
+              private newEquipmentDialogRef: MatDialogRef<NewEquipmentComponent>,
               @Inject(MAT_DIALOG_DATA) public data: EquipmentPopupData,
               private snackBarService: MatSnackBar) {
   }
@@ -57,6 +58,9 @@ export class NewEquipmentComponent implements OnInit{
     const equipment: Equipment = this.formGroup.getRawValue() as Equipment;
     this.equipmentService.create(equipment)
       .subscribe({
+        next: value => {
+          this.newEquipmentDialogRef.close(value);
+        },
         error: err => {
           this.snackBarService
             .openFromComponent<SnackBarComponent, NotificationData>(
@@ -66,6 +70,7 @@ export class NewEquipmentComponent implements OnInit{
                 message: err.message
               })
             );
+          this.newEquipmentDialogRef.close(undefined);
         },
         complete: () => {
           this.snackBarService
@@ -80,5 +85,8 @@ export class NewEquipmentComponent implements OnInit{
       });
   }
 
+  cancel() {
+    this.newEquipmentDialogRef.close(undefined);
+  }
 }
 

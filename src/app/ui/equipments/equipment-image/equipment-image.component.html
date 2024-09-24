@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Set equipment image</h1>
+<mat-dialog-content>
+
+ <div class="dialog-container">
+   <app-form-file
+     #imageUploader
+     [label]="'select image'"
+     [accept]="accept"
+     [width]="'100%'"
+     (fileChanges)="onFileChanges($event)">
+   </app-form-file>
+ </div>
+
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button
+    mat-button
+    (click)="cancel()"
+    color="warn">
+    cancel
+  </button>
+  <button
+    mat-button
+    [disabled]="disabledSaveButton()"
+    (click)="onSaveImage()"
+    color="primary">
+    save
+  </button>
+</mat-dialog-actions>

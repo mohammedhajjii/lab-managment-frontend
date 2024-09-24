@@ -1,0 +1,46 @@
+<mat-form-field
+  [style.width]="width">
+  <mat-label>
+    {{label}}
+  </mat-label>
+  <input
+    [formControl]="control"
+    matNativeControl
+    type="time"
+  >
+
+  <mat-icon
+    matSuffix
+    [color]="isInvalid() ? 'warn': 'primary'">
+    {{
+      isInvalid() ?
+        'cancel' : 'check_circle'
+    }}
+  </mat-icon>
+
+  <mat-hint>
+    valid range is from 8AM to 8PM
+  </mat-hint>
+
+  @if(control.hasError('required')){
+    <mat-error>field {{label}} is required!</mat-error>
+  }
+  @if(control.hasError('startTime')){
+    <mat-error>invalid start-time!</mat-error>
+  }
+
+  @if(control.hasError('endTime')){
+    <mat-error>invalid end-time!</mat-error>
+  }
+
+  @if (control.hasError('maxDuration')){
+    <mat-error>max duration between start and end times should be less than 3 hours!</mat-error>
+  }
+  @if (control.hasError('startAfterEnd')){
+    <mat-error>start time should be before end time!</mat-error>
+  }
+  @if (control.hasError('endBeforeStart')){
+    <mat-error>end time should be after start time!</mat-error>
+  }
+
+</mat-form-field>

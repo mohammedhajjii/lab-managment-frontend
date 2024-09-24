@@ -35,7 +35,8 @@ export const environment: Environment = {
   equipmentApi: {
     baseUrl: 'http://localhost:9092/equipments',
     endpoints: {
-      categories: '/categories'
+      categories: '/categories',
+      reservations: '/reservations'
     }
   }
 

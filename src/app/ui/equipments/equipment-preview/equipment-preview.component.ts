@@ -1,13 +1,20 @@
 import {Component, Input, OnInit, Output} from '@angular/core';
-import {Equipment} from "../../../models/equipment.model";
+import {Equipment, EquipmentStatus} from "../../../models/equipment.model";
 import {of, Subject, switchMap} from "rxjs";
 import {EquipmentService} from "../../../services/equipment.service";
 import {MatDialog} from "@angular/material/dialog";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {ConfirmComponent} from "../../popup/confirm/confirm.component";
-import {confirmDialogConfig, ConfirmDialogData, notificationConfig, NotificationData} from "../../../utils/popup.utils";
+import {
+  confirmDialogConfig,
+  ConfirmDialogData, equipmentReservationDialogConfigFn,
+  EquipmentReservationPopupData,
+  notificationConfig,
+  NotificationData
+} from "../../../utils/popup.utils";
 import {OnAction} from "../../../utils/actions.utils";
 import {SnackBarComponent} from "../../popup/snack-bar/snack-bar.component";
+import {ReserveEquipmentComponent} from "../reservations/reserve-equipment/reserve-equipment.component";
 
 @Component({
   selector: 'app-equipment-preview',
@@ -72,5 +79,17 @@ export class EquipmentPreviewComponent implements OnInit{
       }
     });
 
+  }
+
+  isAvailable() : boolean{
+    return this.equipment.status === EquipmentStatus.AVAILABLE;
+  }
+
+  onReserveEquipment() {
+    const equipmentReservationDialogRef = this.dialogService
+      .open<ReserveEquipmentComponent, EquipmentReservationPopupData, void>(
+        ReserveEquipmentComponent,
+        equipmentReservationDialogConfigFn({})
+      );
   }
 }

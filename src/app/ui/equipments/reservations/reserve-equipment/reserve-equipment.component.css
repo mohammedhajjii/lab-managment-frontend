@@ -1,0 +1,10 @@
+.content{
+  display: grid;
+  row-gap: 10px;
+}
+
+.reservation-time-range{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}

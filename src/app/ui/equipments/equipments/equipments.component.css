@@ -16,3 +16,7 @@
   align-items: center;
   justify-content: space-between;
 }
+
+.main-button{
+  min-width: 120px;
+}

@@ -18,8 +18,8 @@ export class FormSelectComponent<T, R extends T[keyof T]> implements OnInit{
   @Input() hint: string;
   @Input() errorsHandler: Record<string, string>;
   @Input() dataSource: T[];
-  @Input() valueMapper: Mapper<T>
-  @Input() labelMapper: Mapper<T>;
+  @Input() valueMapper: Mapper<T, R>
+  @Input() labelMapper: Mapper<T, any>;
   @Input() width: string = '60%';
   @Input() focus: boolean = false;
   @ViewChild(MatTooltip) tooltip: MatTooltip;

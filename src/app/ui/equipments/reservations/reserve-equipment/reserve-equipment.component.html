@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>new reservation</h2>
+<mat-dialog-content>
+  <div class="content">
+
+    <app-date
+      [control]="date"
+      label="Reservation date"
+      placeholder="for date">
+    </app-date>
+
+    <app-time
+      [control]="startTime"
+      label="Start time">
+    </app-time>
+
+    <app-time
+      [control]="endTime"
+      label="End time">
+    </app-time>
+
+    <app-textarea
+      [control]="description"
+      label="Description"
+      placeholder="reservation description">
+    </app-textarea>
+
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    [mat-dialog-close]="true">
+    cancel
+  </button>
+</mat-dialog-actions>

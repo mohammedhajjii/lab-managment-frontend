@@ -1,7 +1,12 @@
 import { Injectable } from '@angular/core';
 import {environment} from "../../environments/environment";
 import {HttpClient, HttpHeaders} from "@angular/common/http";
-import {Category, Equipment} from "../models/equipment.model";
+import {
+  Category,
+  Equipment,
+  EquipmentReservationRequestDTO,
+  EquipmentReservationResponseDTO
+} from "../models/equipment.model";
 import {catchError, Observable, of, switchMap} from "rxjs";
 import {FormGroup} from "@angular/forms";
 import {OnAction} from "../utils/actions.utils";
@@ -13,6 +18,7 @@ export class EquipmentService {
 
   equipmentsBaseUrl: string = environment.equipmentApi.baseUrl;
   categoriesEndpoint: string = environment.equipmentApi.endpoints['categories'];
+  reservationsEndpoint: string = environment.equipmentApi.endpoints['reservations'];
 
   constructor(private http: HttpClient) {}
 
@@ -97,6 +103,23 @@ export class EquipmentService {
       `${this.equipmentsBaseUrl}${this.categoriesEndpoint}/${name}/exists`;
 
     return this.http.get<boolean>(url);
+  }
+
+
+  /*** ----------------------------- RESERVATION ------------------------------- ***/
+  reserveEquipment(requestDTO: EquipmentReservationRequestDTO): Observable<EquipmentReservationResponseDTO>{
+    const url: string = `${this.equipmentsBaseUrl}${this.reservationsEndpoint}`;
+    return this.http.post<EquipmentReservationResponseDTO>(url, requestDTO);
+  }
+
+  getReservation(id: string): Observable<EquipmentReservationResponseDTO>{
+    const url: string = `${this.equipmentsBaseUrl}${this.reservationsEndpoint}/${id}`;
+    return this.http.get<EquipmentReservationResponseDTO>(url);
+  }
+
+  getAllReservations(): Observable<EquipmentReservationResponseDTO[]>{
+    const url: string = `${this.equipmentsBaseUrl}${this.reservationsEndpoint}`;
+    return this.http.get<EquipmentReservationResponseDTO[]>(url);
   }
 
 }

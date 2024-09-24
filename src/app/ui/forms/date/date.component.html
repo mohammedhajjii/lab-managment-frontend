@@ -1,0 +1,36 @@
+<mat-form-field
+  [style.width]="width">
+  <mat-label>
+    {{label}}
+  </mat-label>
+
+  <input
+    matInput
+    [formControl]="control"
+    [matDatepickerFilter]="dateFilter"
+    [matDatepicker]="picker"
+  >
+
+  <mat-hint>MM/DD/YYYY</mat-hint>
+
+  <mat-datepicker-toggle
+    matIconSuffix [for]="picker">
+  </mat-datepicker-toggle>
+
+  <mat-datepicker
+    #picker>
+  </mat-datepicker>
+
+  @if(control.hasError('required')){
+    <mat-error>
+      {{label}} field is required!
+    </mat-error>
+  }
+
+  @if(control.hasError('reservationDate')){
+    <mat-error>
+      reservation date must be made at least 48H in advance
+    </mat-error>
+  }
+
+</mat-form-field>

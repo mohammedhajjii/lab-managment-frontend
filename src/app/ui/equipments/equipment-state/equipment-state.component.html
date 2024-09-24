@@ -1,0 +1,29 @@
+
+
+<mat-chip-set>
+
+  @if(state()){
+
+    <mat-chip
+      highlighted
+      color="accent">
+      <mat-icon matChipAvatar>
+        lock
+      </mat-icon>
+      Restricted access
+    </mat-chip>
+
+  } @else {
+    <mat-chip
+      highlighted
+      color="primary">
+      <mat-icon matChipAvatar>
+        public
+      </mat-icon>
+      Public access
+    </mat-chip>
+  }
+</mat-chip-set>
+
+
+

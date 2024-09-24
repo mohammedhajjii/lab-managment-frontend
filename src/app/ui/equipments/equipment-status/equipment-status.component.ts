@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, input, model, ModelSignal} from '@angular/core';
 import {EquipmentStatus} from "../../../models/equipment.model";
 
 @Component({
@@ -6,6 +6,10 @@ import {EquipmentStatus} from "../../../models/equipment.model";
   templateUrl: './equipment-status.component.html',
   styleUrl: './equipment-status.component.css'
 })
-export class EquipmentStatusComponent {
-  @Input() status: EquipmentStatus = EquipmentStatus.AVAILABLE;
+export class EquipmentStatusComponent{
+
+  status = input<EquipmentStatus>(EquipmentStatus.AVAILABLE);
+
+  protected readonly EquipmentStatus = EquipmentStatus;
+
 }

@@ -1,4 +1,41 @@
-<div [class]="'app-badge ' + status">
-  {{status}}
-</div>
+
+
+<mat-chip-set>
+
+  @switch (status()){
+    @case (EquipmentStatus.OUT_OF_SERVICE){
+      <mat-chip
+        highlighted
+        color="accent">
+        <mat-icon matChipAvatar>
+          warning
+        </mat-icon>
+        temporary unavailable
+      </mat-chip>
+    }
+    @case (EquipmentStatus.DECOMMISSIONED){
+      <mat-chip
+        highlighted
+        color="warn">
+        <mat-icon matChipAvatar>
+          remove_circle
+        </mat-icon>
+         Decommissioned
+      </mat-chip>
+    }
+    @default {
+      <mat-chip
+        highlighted
+        color="primary">
+        <mat-icon matChipAvatar>
+          power_on
+        </mat-icon>
+        Available
+      </mat-chip>
+    }
+  }
+
+</mat-chip-set>
+
+
 

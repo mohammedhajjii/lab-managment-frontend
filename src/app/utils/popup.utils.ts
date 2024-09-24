@@ -3,6 +3,14 @@ import {MatDialogConfig, MatDialogRef} from "@angular/material/dialog";
 import {MatSnackBarConfig} from "@angular/material/snack-bar";
 import {Department} from "../models/department.model";
 import {Category, Equipment} from "../models/equipment.model";
+import {ConfirmDialog} from "primeng/confirmdialog";
+
+
+/*** -------------------------------- Config Generic type ------------------------**/
+
+export type AppDialogConfig<T> = (data: T) => MatDialogConfig<T>;
+export type AppSnackBarConfig<T> = (data: T) => MatSnackBarConfig<T>;
+/*** -------------------------------- Config Generic type ------------------------**/
 
 export interface UserCreationDialogData {
   kind: Profile;
@@ -19,13 +27,14 @@ export enum DialogClosingState{
 }
 
 
-export const userCreationDialogConfig = function (data: UserCreationDialogData): MatDialogConfig<UserCreationDialogData>{
-  return {
-    autoFocus: true,
-    disableClose: true,
-    width: '80%',
-    data: data
-  }
+export const userCreationDialogConfig: AppDialogConfig<UserCreationDialogData> =
+    data => {
+      return {
+        autoFocus: true,
+        disableClose: true,
+        width: '80%',
+        data: data
+      }
 }
 
 /*----------------- popup utils for confirm dialog ------------------------------*/
@@ -36,13 +45,14 @@ export interface ConfirmDialogData{
   message: string;
 }
 
-export const confirmDialogConfig = function (data: ConfirmDialogData): MatDialogConfig {
-  return  {
-    autoFocus: true,
-    disableClose: true,
-    minWidth: '35%',
-    data: data
-  };
+export const confirmDialogConfig: AppDialogConfig<ConfirmDialogData> =
+    data => {
+      return  {
+        autoFocus: true,
+        disableClose: true,
+        minWidth: '35%',
+        data: data
+      };
 }
 
 
@@ -55,7 +65,7 @@ export  interface NotificationData{
 }
 
 
-export const notificationConfig = function (data: NotificationData): MatSnackBarConfig<NotificationData>{
+export const notificationConfig: AppSnackBarConfig<NotificationData> = data => {
   return {
     duration: 5000,
     verticalPosition: 'top',
@@ -78,9 +88,8 @@ export enum DepartmentCreationStatus{
   DONE, CANCELED
 }
 
-export type DepartmentPopupConfiguration = (data: DepartmentPopupData) => MatDialogConfig<DepartmentPopupData>;
 
-export const departmentPopupConfig: DepartmentPopupConfiguration =
+export const departmentPopupConfig: AppDialogConfig<DepartmentPopupData> =
     data => {
   return {
     autoFocus: true,
@@ -103,13 +112,7 @@ export interface CategoryPopupData {
   name?: string;
 }
 
-export type EquipmentPopupDialogConfiguration =
-  (data: EquipmentPopupData) => MatDialogConfig<EquipmentPopupData>;
-
-export type CategoryPopupDialogConfiguration =
-  (data: CategoryPopupData) => MatDialogConfig<CategoryPopupData>;
-
-export const equipmentPopupConfig: EquipmentPopupDialogConfiguration =
+export const equipmentPopupConfig: AppDialogConfig<EquipmentPopupData> =
     data => {
       return {
         autoFocus: true,
@@ -120,7 +123,7 @@ export const equipmentPopupConfig: EquipmentPopupDialogConfiguration =
 }
 
 
-export const categoryPopupConfig: CategoryPopupDialogConfiguration =
+export const categoryPopupConfig: AppDialogConfig<CategoryPopupData> =
   data => {
     return {
       disableClose: true,
@@ -136,10 +139,7 @@ export interface QrCodePopupData{
   qrcode: string
 }
 
-export type QrCodePopupConfig =
-  (qrcode: QrCodePopupData) => MatDialogConfig<QrCodePopupData>;
-
-export const qrcodePopupConfig: QrCodePopupConfig =
+export const qrcodePopupConfig: AppDialogConfig<QrCodePopupData> =
   qrcode => {
     return {
       disableClose: true,
@@ -148,3 +148,54 @@ export const qrcodePopupConfig: QrCodePopupConfig =
       data: qrcode
     }
 }
+
+
+/**------------------------------------------------------------------**/
+export interface EquipmentImageData{
+  equipmentId: string;
+}
+
+export const equipmentImagePopupConfig: AppDialogConfig<EquipmentImageData> =
+    data => {
+      return {
+        disableClose: true,
+        autoFocus: true,
+        width: '40%',
+        data: data
+      }
+
+}
+
+/**--------------------------------------------------------------**/
+
+export interface UpdateEquipmentData {
+  equipment: Equipment;
+  categories: Category[];
+}
+
+export const updateEquipmentDialogConfig : AppDialogConfig<UpdateEquipmentData> =
+  data => {
+    return {
+      disableClose: true,
+      autoFocus: true,
+      width: '50%',
+      data: data
+    };
+
+  }
+
+/**------------------------- Reservation popup -------------------------------------**/
+
+export interface EquipmentReservationPopupData{
+
+}
+
+export const equipmentReservationDialogConfigFn : AppDialogConfig<EquipmentReservationPopupData> =
+  data => {
+    return {
+      disableClose: true,
+      autoFocus: true,
+      width: '50%',
+      data: data
+    };
+  }

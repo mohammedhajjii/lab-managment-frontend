@@ -1,0 +1,66 @@
+<h2 mat-dialog-title>Update equipment details</h2>
+<mat-dialog-content>
+
+  <div class="content">
+
+    <app-form-input
+      [control]="name"
+      [width]="'100%'"
+      [errorsHandler]="{
+        required: 'equipment name is required',
+        equipment: 'equipment already exists'
+      }"
+      placeholderText="Name"
+      inputLabel="Equipment name">
+    </app-form-input>
+
+
+    <app-form-select
+      [control]="category"
+      [width]="'100%'"
+      [errorsHandler]="{required: 'please select a category'}"
+      [dataSource]="data.categories"
+      [valueMapper]="Mappers.equipmentCategoryValueMapper"
+      [labelMapper]="Mappers.equipmentCategoryLabelMapper"
+      selectLabel="Category">
+    </app-form-select>
+
+    <app-form-select
+      [control]="status"
+      [width]="'100%'"
+      [errorsHandler]="{required: 'please select a status'}"
+      [dataSource]="allStatus"
+      [valueMapper]="statusValueMapper"
+      [labelMapper]="statusLabelMapper"
+      selectLabel="Equipment status">
+    </app-form-select>
+
+    <app-form-toggle
+      [control]="restricted"
+      [width]="'100%'"
+      [toggleColor]="'primary'"
+      toggleLabel="Restricted access">
+    </app-form-toggle>
+
+
+
+
+  </div>
+
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    (click)="cancel()"
+    color="warn">
+    cancel
+  </button>
+  <button
+    mat-button
+    [disabled]="disableSaveButton()"
+    (click)="saveEquipment()"
+    color="primary">
+    save
+  </button>
+</mat-dialog-actions>

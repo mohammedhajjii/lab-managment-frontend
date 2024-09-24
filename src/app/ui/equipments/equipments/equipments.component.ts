@@ -1,4 +1,4 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, computed, effect, OnInit, signal, ViewChild} from '@angular/core';
 import {
   AllEquipmentStatus, allEquipmentStatusValues,
   EquipmentFilter,
@@ -26,6 +26,10 @@ export class EquipmentsComponent implements OnInit{
   equipments!: Equipment[];
   displayedEquipments!: Equipment[];
   categories!: Category[];
+
+
+  equipmentsSignal = signal<Equipment[]>([]);
+
 
 
   @ViewChild(SearchComponent) searchComponent!: SearchComponent;
@@ -71,7 +75,7 @@ export class EquipmentsComponent implements OnInit{
   newEquipment() {
 
     const newEquipmentDialogRef = this.dialogService
-      .open<NewEquipmentComponent, EquipmentPopupData, boolean>(
+      .open<NewEquipmentComponent, EquipmentPopupData, Equipment>(
         NewEquipmentComponent,
         equipmentPopupConfig({
           categories: this.categories
@@ -80,13 +84,16 @@ export class EquipmentsComponent implements OnInit{
 
     newEquipmentDialogRef.afterClosed()
       .subscribe({
-        next: submitted => {
-          if(submitted) this.refresh();
+        next: result => {
+          if (result){
+            this.equipments.push(result);
+            this.onFilterGroupValuesChanges(this.equipmentFiler.getRawValues());
+          }
         }
       });
   }
 
-  onFilterGroupValuesChanges(values: FilterGroupData<EquipmentFilter>) {
+  onFilterGroupValuesChanges(values: FilterGroupData<EquipmentFilter>): void {
     this.displayedEquipments = this.equipments
       .filter(this.equipmentFiler.getFilterControl('category')
         .applyExternalPredicateFn(values.category))
@@ -94,6 +101,7 @@ export class EquipmentsComponent implements OnInit{
         .applyExternalPredicateFn(values.status));
 
   }
+
 
   onSearchKeyword(keyword: string) {
     console.log(keyword);

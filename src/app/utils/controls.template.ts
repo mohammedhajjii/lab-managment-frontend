@@ -79,3 +79,18 @@ export interface EquipmentFormGroup{
   restricted: FormControl<boolean>;
   categoryId: FormControl<number>;
 }
+
+
+export interface UpdateEquipmentFormGroup {
+  name: FormControl<string>;
+  status: FormControl<EquipmentStatus>;
+  restricted: FormControl<boolean>;
+  categoryId: FormControl<number>;
+}
+
+export interface EquipmentReservationFormGroup {
+  date: FormControl<Date>;
+  startTime: FormControl<string>;
+  endTime: FormControl<string>;
+  description: FormControl<string>;
+}

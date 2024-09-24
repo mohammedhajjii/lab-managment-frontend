@@ -72,6 +72,16 @@ import { CategoryComponent } from './ui/equipments/categories/category/category.
 import { EquipmentPreviewComponent } from './ui/equipments/equipment-preview/equipment-preview.component';
 import { EquipmentQrcodeComponent } from './ui/equipments/equipment-qrcode/equipment-qrcode.component';
 import { EquipmentStatusComponent } from './ui/equipments/equipment-status/equipment-status.component';
+import {MatChipsModule} from "@angular/material/chips";
+import { EquipmentImageComponent } from './ui/equipments/equipment-image/equipment-image.component';
+import { EquipmentStateComponent } from './ui/equipments/equipment-state/equipment-state.component';
+import { UpdateEquipmentComponent } from './ui/equipments/update-equipment/update-equipment.component';
+import { ReserveEquipmentComponent } from './ui/equipments/reservations/reserve-equipment/reserve-equipment.component';
+import {MatDatepickerModule} from "@angular/material/datepicker";
+import {MatNativeDateModule} from "@angular/material/core";
+import { TimeComponent } from './ui/forms/time/time.component';
+import { TextareaComponent } from './ui/forms/textarea/textarea.component';
+import { DateComponent } from './ui/forms/date/date.component';
 
 @NgModule({
   declarations: [
@@ -112,6 +122,13 @@ import { EquipmentStatusComponent } from './ui/equipments/equipment-status/equip
     EquipmentPreviewComponent,
     EquipmentQrcodeComponent,
     EquipmentStatusComponent,
+    EquipmentImageComponent,
+    EquipmentStateComponent,
+    UpdateEquipmentComponent,
+    ReserveEquipmentComponent,
+    TimeComponent,
+    TextareaComponent,
+    DateComponent,
   ],
     imports: [
         BrowserModule,
@@ -149,6 +166,9 @@ import { EquipmentStatusComponent } from './ui/equipments/equipment-status/equip
         MatTabsModule,
         MatProgressSpinnerModule,
         NgOptimizedImage,
+        MatChipsModule,
+        MatDatepickerModule,
+        MatNativeDateModule
     ],
   providers: [
     {
@@ -158,7 +178,8 @@ import { EquipmentStatusComponent } from './ui/equipments/equipment-status/equip
       deps: [KeycloakService]
     },
     provideAnimationsAsync(),
-    DatePipe
+    DatePipe,
+    MatDatepickerModule
   ],
   bootstrap: [AppComponent],
 })
